@@ -1,0 +1,23 @@
+{
+  "name": "restoappp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently --kill-others \"cd back && npm start\" \"cd front && npm start\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarcoDum/RestoApp-.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MarcoDum/RestoApp-/issues"
+  },
+  "homepage": "https://github.com/MarcoDum/RestoApp-#readme",
+  "dependencies": {
+    "concurrently": "^4.0.1"
+  }
+}

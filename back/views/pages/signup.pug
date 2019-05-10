@@ -1,0 +1,26 @@
+extends ../layout
+ 
+block content
+
+    h2="SignUp Page"
+    form(method='POST', action='signup', enctype="multipart/form-data")
+        .form-group
+            label(for='exampleFormControlInput1') Name
+            input#exampleFormControlInput1.form-control(type='text',name='name', placeholder='Enter your name')
+        .form-group
+            label(for='exampleFormControlInput1') Last Name
+            input#exampleFormControlInput1.form-control(type='text',name='lastname', placeholder='Enter your last name')
+        .form-group
+        .form-group
+            label(for='exampleFormControlInput3') Email
+            input#exampleFormControlInput2.form-control(type='email',name='email', placeholder='name@example.com')
+
+        .form-group
+            label(for='exampleFormControlInput4') Password
+            input#exampleFormControlInput3.form-control(type='password',name='password', placeholder='Choose a password')
+        button(type="submit" class="btn btn-outline-dark") Submit
+
+
+        
+            
+        
