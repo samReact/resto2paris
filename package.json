@@ -1,5 +1,5 @@
 {
-  "name": "restoappp",
+  "name": "resto2paris",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MarcoDum/RestoApp-.git"
+    "url": "git+https://github.com/tifus69/resto2paris.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/MarcoDum/RestoApp-/issues"
+    "url": "https://github.com/tifus69/resto2paris/issues"
   },
-  "homepage": "https://github.com/MarcoDum/RestoApp-#readme",
+  "homepage": "https://github.com/tifus69/resto2paris#readme",
   "dependencies": {
     "concurrently": "^4.0.1"
   }

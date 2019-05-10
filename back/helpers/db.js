@@ -5,8 +5,6 @@ const connection = mysql.createConnection({
   password: "rootSam$",
   database: "alternance",
   port: 3306,
-  host: "127.0.0.1",
-  dialect: "mysql",
-  logging: false
+  host: "127.0.0.1"
 });
 module.exports = connection;
