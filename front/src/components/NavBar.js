@@ -89,7 +89,7 @@ class NavBar extends Component {
               <MenuItem
                 onClick={e => {
                   this.setState({ anchorEl: null });
-                  this.props.history.push("/restaurants");
+                  this.props.history.push("/");
                 }}
               >
                 Les restaurants

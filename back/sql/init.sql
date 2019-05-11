@@ -4,7 +4,8 @@ CREATE TABLE restaurants
 ( 
     id SMALLINT PRIMARY KEY  AUTO_INCREMENT,  
     name VARCHAR(100),  
-    address VARCHAR(100),  
+    address1 VARCHAR(100),
+    address2 VARCHAR(100),   
     area VARCHAR(100),  
     city VARCHAR(100),  
     mainCategory VARCHAR(100),  

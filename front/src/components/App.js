@@ -43,7 +43,6 @@ class App extends Component {
         method: "get"
       })
       .then(res => {
-        console.log(res);
         return this.setState({
           restaurants: res.data,
           restaurantsFiltered: res.data,
@@ -115,26 +114,27 @@ class App extends Component {
             <Switch>
               <Route
                 exact
-                path="/signin"
+                path="/"
                 render={props => (
-                  <SignIn isAuthenticated={this.handleAuthenticated} />
-                )}
-              />
-              <Route exact path="/signup" render={props => <SignUp />} />
-
-              <Route
-                path="/map"
-                render={props => (
-                  <MapList
+                  <CardList
                     restaurants={this.state.restaurantsFiltered}
                     {...props}
                   />
                 )}
               />
               <Route
-                path="/restaurants"
+                // exact
+                path="/signin"
                 render={props => (
-                  <CardList
+                  <SignIn isAuthenticated={this.handleAuthenticated} />
+                )}
+              />
+              <Route path="/signup" render={props => <SignUp />} />
+
+              <Route
+                path="/map"
+                render={props => (
+                  <MapList
                     restaurants={this.state.restaurantsFiltered}
                     {...props}
                   />

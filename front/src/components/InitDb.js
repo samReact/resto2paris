@@ -1,4 +1,4 @@
-import db from "../db.json";
+import db from "../db.1.json";
 import axios from "axios";
 
 export const InitDb = () => {

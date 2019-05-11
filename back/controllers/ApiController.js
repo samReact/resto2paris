@@ -10,7 +10,7 @@ class ApiController {
    */
 
   loading(req, res, err) {
-    connection.query("SELECT * FROM restaurants LIMIT 50", function(
+    connection.query("SELECT * FROM restaurants LIMIT 150", function(
       error,
       result
     ) {
@@ -52,7 +52,8 @@ class ApiController {
     const resto = req.body;
     let restoo = resto.map(e => [
       e.name,
-      e.address,
+      e.address1,
+      e.address2,
       e.area,
       e.city,
       e.mainCategory,
@@ -66,9 +67,8 @@ class ApiController {
       e.latitude,
       e.longitude
     ]);
-    console.log(restoo);
     connection.query(
-      "INSERT INTO restaurants (name, address, area,city,mainCategory,secondaryCategory,editorial_rating,description,annotation,owner_annotation,to_website,image_url,latitude,longitude) VALUES ?",
+      "INSERT INTO restaurants (name,address1,address2,area,city,mainCategory,secondaryCategory,editorial_rating,description,annotation,owner_annotation,to_website,image_url,latitude,longitude) VALUES ?",
       [restoo],
       function(error, res) {
         console.log(error);
