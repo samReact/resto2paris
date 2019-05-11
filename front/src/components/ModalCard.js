@@ -1,16 +1,16 @@
-import React, { Component } from "react";
-import Typography from "@material-ui/core/Typography";
-import { withStyles } from "@material-ui/core/styles";
-import PropTypes from "prop-types";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardMedia from "@material-ui/core/CardMedia";
-import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import Slide from "@material-ui/core/Slide";
-import { GoogleApiWrapper } from "google-maps-react";
+import React, { Component } from 'react';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import Slide from '@material-ui/core/Slide';
+import { GoogleApiWrapper } from 'google-maps-react';
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
@@ -21,23 +21,23 @@ const styles = theme => ({
   modal: {
     boxShadow: theme.shadows[5],
     padding: theme.spacing.unit * 4,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh"
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh'
   },
   card: {
     maxWidth: 600
   },
   media: {
     height: 0,
-    paddingTop: "56.25%" // 16:9
+    paddingTop: '56.25%' // 16:9
   },
   divCard: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh"
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh'
   }
 });
 
@@ -60,7 +60,7 @@ class ModalCard extends Component {
           onClose={this.props.close}
           // aria-labelledby="alert-dialog-slide-title"
           // aria-describedby="alert-dialog-slide-description"
-          scroll={"body"}
+          scroll={'body'}
           // aria-labelledby="scroll-dialog-title"
         >
           <Card className={classes.card}>
@@ -97,7 +97,7 @@ ModalCard.propTypes = {
 
 export default withStyles(styles)(
   GoogleApiWrapper({
-    apiKey: "AIzaSyBJWOhhYJVHkzShIFen7id4uZdFtooV4Xg"
+    apiKey: 'AIzaSyBJWOhhYJVHkzShIFen7id4uZdFtooV4Xg'
   })(ModalCard)
 );
 

@@ -19,5 +19,6 @@
   "homepage": "https://github.com/tifus69/resto2paris#readme",
   "dependencies": {
     "concurrently": "^4.0.1"
-  }
+  },
+  "devDependencies": {}
 }
