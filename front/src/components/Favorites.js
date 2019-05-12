@@ -9,7 +9,7 @@ class Favorites extends Component {
     }
 
     componentDidMount() {
-        // init.InitDb();
+      
         fetch(`/api/favorites/54`, {
           method: "get"
         })

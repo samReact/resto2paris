@@ -1,4 +1,6 @@
 const connection = require("../helpers/db");
+const passport = require("passport");
+const jwt = require("jsonwebtoken");
 /**
  * Class Pages Controller
  */
@@ -24,28 +26,46 @@ class ApiController {
 
   getFavorites(req, res, err) {
     const id_user = req.params.id_user;
-    connection.query(`SELECT * FROM favorites`, function(error, result) {
-      if (err) {
-        res.status(500).json({ flash: error.message });
-      } else {
-        res.send(result);
+    console.log(id_user);
+    connection.query(
+      `SELECT restaurant_id FROM favorites WHERE user_id = ${id_user}`,
+      function(error, result) {
+        if (err) {
+          res.status(500).json({ flash: error.message });
+        } else {
+          res.send(result);
+        }
       }
-    });
+    );
   }
   recordFavorites(req, res, err) {
-    console.log(req.params.id_restaurant);
-    const id_restaurant = parseInt(req.params.id_restaurant);
-    const id_user = 54;
+    // let user = req.body;
+    // const { id } = user;
+    const { userId, restaurantId } = req.body;
+
     connection.query(
-      "INSERT INTO favorites SET ?",
-      { id_user: id_user, id_restaurant: id_restaurant },
-      function(error, result) {
+      `INSERT INTO favorites (user_id, restaurant_id) VALUES (${userId},${restaurantId})`,
+      error => {
         if (error) throw error;
       }
     );
-    if (err) res.status(500).json({ flash: error.message });
-    else res.status(200).json({ flash: "Database created !" });
+    if (err) res.status(500).send({ flash: error.message });
+    else res.status(200).send({ flash: "User created !" });
     res.end();
+
+    // console.log(req.params.id_restaurant);
+    // const id_restaurant = parseInt(req.params.id_restaurant);
+    // const id_user = 54;
+    // connection.query(
+    //   "INSERT INTO favorites SET ?",
+    //   { id_user: id_user, id_restaurant: id_restaurant },
+    //   function(error, result) {
+    //     if (error) throw error;
+    //   }
+    // );
+    // if (err) res.status(500).json({ flash: error.message });
+    // else res.status(200).json({ flash: "Database created !" });
+    // res.end();
   }
 
   record(req, res, err) {

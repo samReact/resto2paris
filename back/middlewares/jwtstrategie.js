@@ -9,7 +9,7 @@ passport.use(
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: "yoursecret"
     },
-    function(jwtPayload, cb) {
+    (jwtPayload, cb) => {
       return cb(null, jwtPayload);
     }
   )

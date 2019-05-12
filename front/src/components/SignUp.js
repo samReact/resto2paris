@@ -1,26 +1,27 @@
-import React, { Component } from "react";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-import FormGroup from "@material-ui/core/FormGroup";
-import { Link } from "react-router-dom";
-import { Redirect } from "react-router-dom";
-import Paper from "@material-ui/core/Paper";
-import RestaurantIcon from "@material-ui/icons/Restaurant";
-import Avatar from "@material-ui/core/Avatar";
-import { withStyles } from "@material-ui/core/styles";
-import PropTypes from "prop-types";
-import red from "@material-ui/core/colors/red";
-import { withRouter } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import React, { Component } from 'react';
+import {
+  TextField,
+  Button,
+  Grid,
+  FormGroup,
+  Avatar,
+  Paper,
+} from '@material-ui/core';
+import { Link, Redirect, withRouter } from 'react-router-dom';
+import RestaurantIcon from '@material-ui/icons/Restaurant';
+import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+import red from '@material-ui/core/colors/red';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
 const styles = theme => ({
   avatar: {
     backgroundColor: red[500],
     width: 120,
-    height: 120
-  }
+    height: 120,
+  },
 });
 
 class SignUp extends Component {
@@ -28,82 +29,85 @@ class SignUp extends Component {
     super(props);
     this.state = {
       post: {
-        email: "",
-        password: "",
-        name: "",
-        lastname: ""
+        email: '',
+        password: '',
+        name: '',
+        lastname: '',
       },
-      flash: "",
+      flash: '',
       success: false,
       open: false,
-      password2: "",
-      isAuthenticated: false
+      password2: '',
+      isAuthenticated: false,
 
       // password2: ""
     };
     this.updateEmailField = this.updateEmailField.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
-  updateEmailField(e) {
-    this.setState({
-      post: {
-        ...this.state.post,
-        [e.target.id]: e.target.value
-      }
-    });
-  }
-  handleSubmit(e) {
-    e.preventDefault();
 
-    fetch("/auth/signup", {
-      method: "POST",
-      headers: new Headers({
-        "Content-Type": "application/json"
-      }),
-      body: JSON.stringify(this.state.post)
-    })
-      .then(res => res.json())
-      .then(
-        res =>
-          this.setState({
-            flash: res.flash,
-            open: true,
-            isAuthenticated: true
-          }),
-        this.notify(),
-        err => this.setState({ flash: err.flash })
-      );
-    // .then(this.props.history.push("/restaurants"));
-  }
   notify = () => {
-    toast.success("Bienvenue !", {
-      position: "top-right",
-      autoClose: 500,
+    const { flash } = this.state;
+    // const { history } = this.props;
+
+    toast.success(flash, {
+      position: 'top-right',
+      autoClose: 1500,
       hideProgressBar: true,
       closeOnClick: false,
       pauseOnHover: true,
-      draggable: true
+      draggable: true,
+      // onClose: () => history.push('/restaurants'),
     });
   };
 
   handleClose = (event, reason) => {
-    if (reason === "clickaway") {
+    if (reason === 'clickaway') {
       return;
     }
 
     this.setState({ open: false });
   };
 
+  handleSubmit = async e => {
+    e.preventDefault();
+    const { post } = this.state;
+    await axios
+      .post('/auth/signup', post)
+
+      .then(res => res.data)
+      .then(res => {
+        this.setState({
+          flash: res.flash,
+          // open: true,
+          // isAuthenticated: true,
+        });
+      })
+      .catch(err => this.setState({ flash: err.flash }));
+    // .then(this.props.history.push('/restaurants'));
+    this.notify();
+  };
+
+  updateEmailField(e) {
+    const { post } = this.state;
+    this.setState({
+      post: {
+        ...post,
+        [e.target.id]: e.target.value,
+      },
+    });
+  }
+
   render() {
     const { classes } = this.props;
-
+    const { isAuthenticated } = this.state;
     return (
       <Grid
         container
         alignItems="center"
         justify="center"
-        style={{ height: "100vh", backgroundColor: "#2c3e50" }}
+        style={{ height: '100vh', backgroundColor: '#2c3e50' }}
       >
+        <ToastContainer />
         <Grid item xs={12}>
           <Paper elevation={4} style={{ margin: 32 }}>
             <Grid
@@ -111,7 +115,7 @@ class SignUp extends Component {
               alignItems="center"
               justify="center"
               style={{
-                height: "80vh"
+                height: '80vh',
               }}
             >
               <Grid
@@ -119,8 +123,8 @@ class SignUp extends Component {
                 xs={12}
                 sm={4}
                 style={{
-                  display: "flex",
-                  justifyContent: "center"
+                  display: 'flex',
+                  justifyContent: 'center',
                 }}
               >
                 <Avatar className={classes.avatar}>
@@ -129,10 +133,10 @@ class SignUp extends Component {
               </Grid>
               <Grid item xs={12} sm={8} container>
                 <div className="container">
-                  {this.state.isAuthenticated ? (
+                  {isAuthenticated ? (
                     <Redirect
                       to={{
-                        pathname: "/restaurants"
+                        pathname: '/restaurants',
                       }}
                     />
                   ) : null}
@@ -190,7 +194,6 @@ class SignUp extends Component {
                       </Grid>
                       <Link to="/signin">Sign In</Link>
                     </Grid>
-                    <ToastContainer />
                   </form>
                 </div>
               </Grid>
@@ -203,7 +206,7 @@ class SignUp extends Component {
 }
 
 SignUp.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 export default withRouter(withStyles(styles)(SignUp));

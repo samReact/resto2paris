@@ -8,8 +8,7 @@ passport.use(
   new LocalStrategy(
     {
       usernameField: "email",
-      passwordField: "password",
-      session: false
+      passwordField: "password"
     },
     (username, password, cb) => {
       const sql = "SELECT * FROM users WHERE email = ?";
@@ -42,3 +41,13 @@ passport.use(
     }
   )
 );
+
+passport.serializeUser((user, cb) => {
+  cb(null, user.id);
+});
+
+passport.deserializeUser((id, cb) => {
+  User.findById(id, (err, user) => {
+    cb(err, user);
+  });
+});

@@ -1,26 +1,21 @@
-import React, { Component } from "react";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
-import FormGroup from "@material-ui/core/FormGroup";
-import { Link } from "react-router-dom";
-import { Redirect } from "react-router-dom";
-import Paper from "@material-ui/core/Paper";
-import RestaurantIcon from "@material-ui/icons/Restaurant";
-import Avatar from "@material-ui/core/Avatar";
-import { withStyles } from "@material-ui/core/styles";
-import PropTypes from "prop-types";
-import red from "@material-ui/core/colors/red";
-import { withRouter } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import React, { Component } from 'react';
+import { TextField, Button, Grid, FormGroup } from '@material-ui/core';
+import { Link, Redirect, withRouter } from 'react-router-dom';
+import Paper from '@material-ui/core/Paper';
+import RestaurantIcon from '@material-ui/icons/Restaurant';
+import Avatar from '@material-ui/core/Avatar';
+import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+import red from '@material-ui/core/colors/red';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const styles = theme => ({
   avatar: {
     backgroundColor: red[500],
     width: 120,
-    height: 120
-  }
+    height: 120,
+  },
 });
 
 class SignIn extends Component {
@@ -28,33 +23,46 @@ class SignIn extends Component {
     super(props);
     this.state = {
       post: {
-        email: "",
-        password: ""
+        email: '',
+        password: '',
       },
-      flash: "",
+      flash: '',
       open: false,
-      isAuthenticated: false
+      isAuthenticated: false,
     };
     this.updateEmailField = this.updateEmailField.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
-  updateEmailField(e) {
-    this.setState({
-      post: {
-        ...this.state.post,
-        [e.target.id]: e.target.value
-      }
-    });
-  }
-  handleSubmit(e) {
-    e.preventDefault();
 
-    fetch("/auth/signin", {
-      method: "POST",
+  notify = (type, text) => {
+    toast(text, {
+      position: 'top-right',
+      autoClose: 2000,
+      hideProgressBar: true,
+      type,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  };
+
+  handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({ open: false });
+  };
+
+  handleSubmit = e => {
+    e.preventDefault();
+    const { isAuthenticated } = this.props;
+    const { post } = this.state;
+
+    fetch('/auth/signin', {
+      method: 'POST',
       headers: new Headers({
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json',
       }),
-      body: JSON.stringify(this.state.post)
+      body: JSON.stringify(post),
     })
       .then(res => res.json())
       .then(
@@ -62,34 +70,24 @@ class SignIn extends Component {
           this.setState({
             flash: res.message,
             // isAuthenticated: res.isAuthenticated,
-            toast: res.toast
+            toast: res.toast,
           });
           this.notify(res.toast, res.message);
-          this.props.isAuthenticated(res);
-          console.log(res);
+          isAuthenticated(res.user, res.token);
         },
-        err => console.log("erreur")
+        err => console.log('erreur')
       );
     // this.props.history.push("/restaurants");
-  }
-  notify = (type, text) => {
-    toast(text, {
-      position: "top-right",
-      autoClose: 2000,
-      hideProgressBar: true,
-      type: type,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: true
-    });
   };
 
-  handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    this.setState({ open: false });
-  };
+  updateEmailField(e) {
+    this.setState({
+      post: {
+        ...this.state.post,
+        [e.target.id]: e.target.value,
+      },
+    });
+  }
 
   render(props) {
     const { classes } = this.props;
@@ -99,12 +97,12 @@ class SignIn extends Component {
         container
         alignItems="center"
         justify="center"
-        style={{ height: "100vh", backgroundColor: "#2c3e50" }}
+        style={{ height: '100vh', backgroundColor: '#2c3e50' }}
       >
         {this.state.isAuthenticated ? (
           <Redirect
             to={{
-              pathname: "/restaurants"
+              pathname: '/restaurants',
             }}
           />
         ) : null}
@@ -115,7 +113,7 @@ class SignIn extends Component {
               alignItems="center"
               justify="center"
               style={{
-                height: "80vh"
+                height: '80vh',
               }}
             >
               <Grid
@@ -123,8 +121,8 @@ class SignIn extends Component {
                 xs={12}
                 sm={4}
                 style={{
-                  display: "flex",
-                  justifyContent: "center"
+                  display: 'flex',
+                  justifyContent: 'center',
                 }}
               >
                 <Avatar className={classes.avatar}>
@@ -177,7 +175,7 @@ class SignIn extends Component {
 }
 
 SignIn.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 export default withRouter(withStyles(styles)(SignIn));

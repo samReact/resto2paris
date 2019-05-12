@@ -1,23 +1,23 @@
-import React, { Component } from "react";
-import CardList from "./CardList";
-import { Route, Switch, withRouter } from "react-router-dom";
-import MapList from "./MapList";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import { withStyles } from "@material-ui/core/styles";
-import PropTypes from "prop-types";
-import NavBar from "./NavBar";
-import SignIn from "./SignIn";
-import SignUp from "./SignUp";
-import axios from "axios";
-// import * as init from "./InitDb";
+import React, { Component } from 'react';
+import { Route, Switch, withRouter } from 'react-router-dom';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+import axios from 'axios';
+import CardList from './CardList';
+import MapList from './MapList';
+import NavBar from './NavBar';
+import SignIn from './SignIn';
+import SignUp from './SignUp';
+// import * as init from './InitDb';
 
 const styles = theme => ({
   spinner: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh"
-  }
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+  },
 });
 
 class App extends Component {
@@ -28,85 +28,133 @@ class App extends Component {
       restaurantsFiltered: [],
       loading: true,
       favorites: [],
-      favoritesMode: false,
-      isAuthenticated: false
+      user: null,
+      token: null,
     };
-    this.filter = this.filter.bind(this);
-    this.showFavorites = this.showFavorites.bind(this);
-    this.handleAuthenticated = this.handleAuthenticated.bind(this);
   }
 
   componentDidMount() {
     // init.InitDb();
+    this.getAllRestaurants();
+  }
+
+  getAllRestaurants = () =>
     axios
-      .get("/api/restaurants", {
-        method: "get"
-      })
+      .get('/api/restaurants')
       .then(res => {
         return this.setState({
           restaurants: res.data,
           restaurantsFiltered: res.data,
-          loading: false
+          loading: false,
+          favorites: [],
         });
       })
       .catch(error => this.setState({ flash: error.flash }));
-  }
-  handleAuthenticated(bool) {
-    this.setState({
-      isAuthenticated: bool
-    });
-  }
 
-  filter(n) {
-    const arrondissement = n;
-    let filtered = this.state.restaurants.filter(
+  getFavorites = async () => {
+    const { token, user, restaurants } = this.state;
+    const favorites = [];
+    if (token) {
+      const { id } = user;
+      await axios
+        .post(
+          `/api/getFavorites/${id}`,
+          {},
+          {
+            headers: { Authorization: `bearer ${token}` },
+          }
+        )
+        // .then(res => res.data)
+        .then(res => {
+          restaurants.forEach(restaurant => {
+            res.data.map(favoris =>
+              favoris.restaurant_id === restaurant.id
+                ? favorites.push(restaurant)
+                : null
+            );
+          });
+          console.log(favorites);
+          this.setState({ restaurantsFiltered: favorites, favorites });
+        })
+        .catch(err => console.log(err));
+    }
+  };
+  // .then(e => this.setState({ flash: 'Super !' }))
+  // .then(console.log(this.state.flash));
+  // };
+  // }
+  // toast.info(
+  //   "Vous devez être connecté afin d'ajouter, un restaurant comme favoris.",
+  //   {
+  //     position: 'top-right',
+  //     autoClose: 2000,
+  //     hideProgressBar: true,
+  //     closeOnClick: false,
+  //     pauseOnHover: true,
+  //     draggable: true,
+  //     // onClose: () => history.push('/restaurants'),
+  //   }
+  // );
+  // const a = [];
+  // const { restaurants } = this.state;
+  // axios
+  //   .get(`/api/favorites/${user}`)
+  //   .then(res => res.data)
+  //   .then(favorites =>
+  //     restaurants.forEach(restaurant => {
+  //       favorites.map(favoris =>
+  //         favoris.id_restaurant === restaurant.id ? a.push(restaurant) : null
+  //       );
+  //     })
+  //   )
+  //   .then(
+  //     this.setState({
+  //       restaurantsFiltered: a,
+  //       loading: false,
+  //       favoritesMode: true,
+  //     })
+  //   )
+  //   .catch(error => this.setState({ flash: error.flash }));
+
+  handleAuthenticated = (user, token) =>
+    this.setState({
+      user,
+      token,
+    });
+
+  filter = arrondissement => {
+    const { restaurants, favorites } = this.state;
+    const filtered = (favorites.length ? favorites : restaurants).filter(
       elt => elt.address2 === arrondissement
     );
 
-    arrondissement === "tous"
-      ? this.setState({
-          restaurantsFiltered: this.state.restaurants
-        })
-      : this.setState({
-          restaurantsFiltered: filtered
-        });
-  }
-  getfavorites = user => {
-    let a = [];
-    fetch(`/api/favorites/${user}`, {
-      method: "get"
-    })
-      .then(res => res.json(), err => this.setState({ flash: err.flash }))
-      .then(favorites =>
-        this.state.restaurants.forEach(function(restaurant) {
-          favorites.map(favoris =>
-            favoris.id_restaurant === restaurant.id ? a.push(restaurant) : null
-          );
-        })
-      )
-      .then(
-        this.setState({
-          restaurantsFiltered: a,
-          loading: false,
-          favoritesMode: true
-        })
-      );
+    if (arrondissement === 'tous')
+      return this.setState({
+        restaurantsFiltered: favorites.length ? favorites : restaurants,
+      });
+    return this.setState({
+      restaurantsFiltered: filtered,
+    });
   };
-  showFavorites(user) {
-    this.getfavorites(user);
-  }
+
+  // showFavorites = () => {
+  //   // this.getfavorites(user);
+  //   console.log(user);
+  // };
 
   render() {
     const { classes } = this.props;
+    const { loading, restaurantsFiltered, user, token, favorites } = this.state;
     return (
       <div>
         <NavBar
           arrondissement={this.filter}
-          favorites={this.showFavorites}
-          isAuthenticated={this.state.isAuthenticated}
+          favorites={this.getFavorites}
+          allRestaurants={this.getAllRestaurants}
+          user={user}
         />
         <div className="mt-5">
-          {this.state.loading ? (
+          {loading ? (
             <div className={classes.spinner}>
               <CircularProgress size={100} thickness={5} />
             </div>
@@ -117,27 +165,26 @@ class App extends Component {
                 path="/"
                 render={props => (
                   <CardList
-                    restaurants={this.state.restaurantsFiltered}
+                    restaurants={restaurantsFiltered}
                     {...props}
+                    user={user}
+                    token={token}
+                    favResto={favorites}
                   />
                 )}
               />
               <Route
-                // exact
                 path="/signin"
-                render={props => (
+                render={() => (
                   <SignIn isAuthenticated={this.handleAuthenticated} />
                 )}
               />
-              <Route path="/signup" render={props => <SignUp />} />
+              <Route path="/signup" render={() => <SignUp />} />
 
               <Route
                 path="/map"
                 render={props => (
-                  <MapList
-                    restaurants={this.state.restaurantsFiltered}
-                    {...props}
-                  />
+                  <MapList restaurants={restaurantsFiltered} {...props} />
                 )}
               />
             </Switch>
@@ -149,7 +196,7 @@ class App extends Component {
 }
 
 App.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 export default withRouter(withStyles(styles)(App));

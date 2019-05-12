@@ -1,49 +1,58 @@
-import React, { Component } from "react";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import SelectList from "./SelectList";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import { withRouter } from "react-router-dom";
+import React, { Component } from 'react';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  MenuItem,
+  Menu,
+} from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import { withRouter } from 'react-router-dom';
+import SelectList from './SelectList';
 
 const styles = {
   root: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   grow: {
-    flexGrow: 1
-  }
+    flexGrow: 1,
+  },
 };
 
 class NavBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      anchorEl: null
+      anchorEl: null,
     };
   }
 
   handleClick = event => {
     this.setState({ anchorEl: event.currentTarget });
   };
+
   handleClose = () => {
     this.setState({ anchorEl: null });
   };
 
-  handleFavorites = () => {
-    // console.log("hello");
+  getFavorites = () => {
+    console.log('hello');
     this.setState({ anchorEl: null });
-    this.props.favorites(54);
+    this.props.favorites();
   };
 
   render() {
-    const { anchorEl } = this.state;
-    const { classes } = this.props;
+    const { anchorEl, isAuthenticated } = this.state;
+    const {
+      classes,
+      history,
+      user,
+      arrondissement,
+      allRestaurants,
+    } = this.props;
 
     return (
       <div className={classes.root}>
@@ -53,7 +62,7 @@ class NavBar extends Component {
               // className={classes.menuButton}
               color="inherit"
               aria-label="Menu"
-              aria-owns={anchorEl ? "simple-menu" : null}
+              aria-owns={anchorEl ? 'simple-menu' : null}
               aria-haspopup="true"
               onClick={this.handleClick}
             >
@@ -61,21 +70,21 @@ class NavBar extends Component {
             </IconButton>
 
             <Typography
-              style={{ fontSize: "20px" }}
+              style={{ fontSize: '20px' }}
               variant="title"
               color="inherit"
               className={classes.grow}
             >
               Restos de Paris
             </Typography>
-            {this.props.isAuthenticated ? (
+            {user ? (
               <Typography
-                style={{ fontSize: "15px" }}
+                style={{ fontSize: '15px' }}
                 variant="title"
                 color="inherit"
                 // className={classes.grow}
               >
-                {this.props.isAuthenticated.message}
+                {user.name}
               </Typography>
             ) : null}
 
@@ -89,7 +98,8 @@ class NavBar extends Component {
               <MenuItem
                 onClick={e => {
                   this.setState({ anchorEl: null });
-                  this.props.history.push("/");
+                  allRestaurants();
+                  history.push('/');
                 }}
               >
                 Les restaurants
@@ -97,26 +107,29 @@ class NavBar extends Component {
               <MenuItem
                 onClick={e => {
                   this.setState({ anchorEl: null });
-                  this.props.history.push("/map");
+                  history.push('/map');
                 }}
               >
                 Carte des restaurants
               </MenuItem>
 
+              <MenuItem onClick={e => this.getFavorites()}>
+                Mes Favoris
+              </MenuItem>
               <MenuItem
                 onClick={e => {
                   // this.props.favorites(54);
                   // this.setState({ anchorEl: null });
-                  this.props.history.push("/signin");
+                  history.push('/signin');
 
-                  // this.handleFavorites
+                  // this.handleFavorites();
                 }}
               >
-                Mes Favoris
+                Login
               </MenuItem>
             </Menu>
 
-            <SelectList arrondissement={this.props.arrondissement} />
+            <SelectList arrondissement={arrondissement} />
           </Toolbar>
         </AppBar>
       </div>
@@ -125,7 +138,7 @@ class NavBar extends Component {
 }
 
 NavBar.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 export default withRouter(withStyles(styles)(NavBar));

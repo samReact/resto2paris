@@ -15,7 +15,7 @@ class AuthController {
   recordUser(req, res, err) {
     let user = req.body;
     user = bcrypt.hashPassword(user, user.password);
-    connection.query("INSERT INTO users SET ?", user, function(error, result) {
+    connection.query("INSERT INTO users SET ?", user, (error, result) => {
       if (error) throw error;
     });
     if (err) res.status(500).json({ flash: error.message });
@@ -43,7 +43,6 @@ class AuthController {
         return res
           .status(400)
           .json({ message: info.message, toast: info.toast });
-      console.log(user);
       const token = jwt.sign(user.email, "yoursecret");
       return res.json({
         user,

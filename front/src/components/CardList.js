@@ -1,49 +1,53 @@
-import React, { Component } from "react";
-import ReactStars from "react-stars";
-import Typography from "@material-ui/core/Typography";
-import Card from "@material-ui/core/Card";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardMedia from "@material-ui/core/CardMedia";
-import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import red from "@material-ui/core/colors/red";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import { withStyles } from "@material-ui/core/styles";
-import PropTypes from "prop-types";
-import Grid from "@material-ui/core/Grid";
-import RestaurantIcon from "@material-ui/icons/Restaurant";
-import ModalCard from "./ModalCard";
+import React, { Component } from 'react';
+import ReactStars from 'react-stars';
+import {
+  Typography,
+  Card,
+  CardHeader,
+  CardMedia,
+  CardContent,
+  CardActions,
+  Avatar,
+  Button,
+  IconButton,
+  Grid,
+} from '@material-ui/core';
+import { ToastContainer, toast } from 'react-toastify';
+import red from '@material-ui/core/colors/red';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+import RestaurantIcon from '@material-ui/icons/Restaurant';
+import axios from 'axios';
+import ModalCard from './ModalCard';
 
 const styles = theme => ({
   card: {
-    maxWidth: 400
+    maxWidth: 400,
   },
   media: {
     height: 0,
-    paddingTop: "56.25%" // 16:9
+    paddingTop: '56.25%', // 16:9
   },
   actions: {
-    display: "flex"
+    display: 'flex',
   },
   expand: {
-    marginLeft: "auto",
-    [theme.breakpoints.up("sm")]: {
-      marginRight: -8
-    }
+    marginLeft: 'auto',
+    [theme.breakpoints.up('sm')]: {
+      marginRight: -8,
+    },
   },
   avatar: {
-    backgroundColor: red[500]
+    backgroundColor: red[500],
   },
   paper: {
-    position: "absolute",
+    position: 'absolute',
     width: theme.spacing.unit * 50,
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
-    padding: theme.spacing.unit * 4
-  }
+    padding: theme.spacing.unit * 4,
+  },
 });
 
 class CardList extends Component {
@@ -52,13 +56,57 @@ class CardList extends Component {
     this.state = {
       hasError: false,
       open: false,
-      name: "",
+      name: '',
       favorite: false,
-      flash: ""
+      flash: '',
     };
     this.handleExpandClick = this.handleExpandClick.bind(this);
-    this.handleFavorite = this.handleFavorite.bind(this);
   }
+
+  handleClose = () => {
+    this.setState({
+      open: false,
+    });
+  };
+
+  createFavorite = restaurant => {
+    const { token, user } = this.props;
+
+    if (token) {
+      const restaurantId = restaurant.id;
+      const userId = user.id;
+      return (
+        axios
+          .post(
+            `/api/favorites/${restaurant.id}`,
+            { restaurantId, userId },
+            {
+              headers: { Authorization: `bearer ${token}` },
+            }
+          )
+          // .then(res => res.data)
+          .then(res => console.log(res.data))
+          .catch(err => console.log(err))
+      );
+    }
+
+    // .then(e => this.setState({ flash: 'Super !' }))
+    // .then(console.log(this.state.flash));
+    // };
+    // }
+    toast.info(
+      "Vous devez être connecté afin d'ajouter, un restaurant comme favoris.",
+      {
+        position: 'top-right',
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        // onClose: () => history.push('/restaurants'),
+      }
+    );
+  };
 
   handleExpandClick(b) {
     return () => {
@@ -66,45 +114,37 @@ class CardList extends Component {
     };
   }
 
-  handleClose = () => {
-    this.setState({
-      open: false
-    });
-  };
-  handleFavorite(restaurant) {
-    return () => {
-      fetch(`/api/favorites/${restaurant.id}`, {
-        method: "POST"
-        // body: JSON.stringify(restaurant)
-      })
-        .then(res => res.json(), err => this.setState({ flash: err.flash }))
-        .then(e => this.setState({ flash: "Super !" }))
-        .then(console.log(this.state.flash));
-    };
-  }
-
   render() {
-    const { classes } = this.props;
+    const { classes, restaurants, favResto } = this.props;
+    console.log(favResto);
     return (
-      <div className="container">
+      <div className="container" style={{ paddingTop: 50 }}>
         <Grid container spacing={8}>
-          {this.props.restaurants.map(restaurant => (
+          {restaurants.map(restaurant => (
             <Grid key={restaurant.name} item xs={12} sm={6} md={4}>
               <Card name={restaurant} className={classes.card}>
                 <CardHeader
                   avatar={
                     <Avatar className={classes.avatar}>
-                      <RestaurantIcon />
-                    </Avatar>
+  <RestaurantIcon />
+</Avatar>
                   }
                   action={
                     <IconButton
-                      restaurant={restaurant}
-                      onClick={this.handleFavorite(restaurant)}
-                      aria-label="Add to favorites"
-                    >
-                      <FavoriteIcon color="secondary" />
-                    </IconButton>
+  restaurant={restaurant}
+  onClick={() => this.createFavorite(restaurant)}
+  aria-label="Add to favorites"
+>
+  <FavoriteIcon
+                        color={
+                          favResto.length
+                            ? favResto.find(elt => elt.id == restaurant.id)
+                              ? 'secondary'
+                              : 'disabled'
+                            : 'disabled'
+                        }
+                      />
+</IconButton>
                   }
                   title={`${restaurant.name}`}
                   subheader={`${restaurant.mainCategory} ${
@@ -132,7 +172,7 @@ class CardList extends Component {
                     value={restaurant.editorial_rating}
                     count={5}
                     size={15}
-                    color2={"#ffd700"}
+                    color2="#ffd700"
                     edit={false}
                   />
                   <Button
@@ -148,6 +188,7 @@ class CardList extends Component {
             </Grid>
           ))}
         </Grid>
+        <ToastContainer />
         <ModalCard
           open={this.state.open}
           close={this.handleClose}
@@ -159,7 +200,7 @@ class CardList extends Component {
 }
 
 CardList.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(CardList);
