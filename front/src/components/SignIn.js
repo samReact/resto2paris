@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { TextField, Button, Grid, FormGroup } from '@material-ui/core';
-import { Link, Redirect, withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import RestaurantIcon from '@material-ui/icons/Restaurant';
 import Avatar from '@material-ui/core/Avatar';
@@ -26,14 +26,12 @@ class SignIn extends Component {
         email: '',
         password: '',
       },
-      flash: '',
-      open: false,
-      isAuthenticated: false,
     };
     this.updateEmailField = this.updateEmailField.bind(this);
   }
 
   notify = (type, text) => {
+    const { history } = this.props;
     toast(text, {
       position: 'top-right',
       autoClose: 2000,
@@ -42,19 +40,13 @@ class SignIn extends Component {
       closeOnClick: false,
       pauseOnHover: true,
       draggable: true,
+      onClose: () => history.push('/'),
     });
-  };
-
-  handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    this.setState({ open: false });
   };
 
   handleSubmit = e => {
     e.preventDefault();
-    const { isAuthenticated } = this.props;
+    const { isAuthenticated, favorites } = this.props;
     const { post } = this.state;
 
     fetch('/auth/signin', {
@@ -69,27 +61,26 @@ class SignIn extends Component {
         res => {
           this.setState({
             flash: res.message,
-            // isAuthenticated: res.isAuthenticated,
-            toast: res.toast,
           });
-          this.notify(res.toast, res.message);
           isAuthenticated(res.user, res.token);
+          favorites();
+          this.notify(res.toast, res.message);
         },
         err => console.log('erreur')
       );
-    // this.props.history.push("/restaurants");
   };
 
   updateEmailField(e) {
+    const { post } = this.state;
     this.setState({
       post: {
-        ...this.state.post,
+        ...post,
         [e.target.id]: e.target.value,
       },
     });
   }
 
-  render(props) {
+  render() {
     const { classes } = this.props;
 
     return (
@@ -99,13 +90,6 @@ class SignIn extends Component {
         justify="center"
         style={{ height: '100vh', backgroundColor: '#2c3e50' }}
       >
-        {this.state.isAuthenticated ? (
-          <Redirect
-            to={{
-              pathname: '/restaurants',
-            }}
-          />
-        ) : null}
         <Grid item xs={12}>
           <Paper elevation={4} style={{ margin: 32 }}>
             <Grid

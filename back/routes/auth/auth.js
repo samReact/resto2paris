@@ -10,7 +10,6 @@ const controller = new AuthController();
 
 router.get("/map", (req, res) => controller.loading(req, res));
 router.post("/signup", (req, res) => controller.recordUser(req, res));
-router.post("/record", (req, res) => controller.record(req, res));
 router.post("/signin", (req, res) => controller.signin(req, res));
 
 module.exports = router;

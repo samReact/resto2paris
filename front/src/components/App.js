@@ -4,6 +4,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 import CardList from './CardList';
 import MapList from './MapList';
 import NavBar from './NavBar';
@@ -11,7 +12,7 @@ import SignIn from './SignIn';
 import SignUp from './SignUp';
 // import * as init from './InitDb';
 
-const styles = theme => ({
+const styles = () => ({
   spinner: {
     display: 'flex',
     justifyContent: 'center',
@@ -38,6 +39,18 @@ class App extends Component {
     this.getAllRestaurants();
   }
 
+  notify = (type, text) => {
+    toast(text, {
+      position: 'top-right',
+      autoClose: 2000,
+      hideProgressBar: true,
+      type,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  };
+
   getAllRestaurants = () =>
     axios
       .get('/api/restaurants')
@@ -49,14 +62,14 @@ class App extends Component {
           favorites: [],
         });
       })
-      .catch(error => this.setState({ flash: error.flash }));
+      .catch(error => this.notify('error', error.flash));
 
-  getFavorites = async () => {
+  getFavorites = () => {
     const { token, user, restaurants } = this.state;
     const favorites = [];
     if (token) {
       const { id } = user;
-      await axios
+      axios
         .post(
           `/api/getFavorites/${id}`,
           {},
@@ -64,7 +77,6 @@ class App extends Component {
             headers: { Authorization: `bearer ${token}` },
           }
         )
-        // .then(res => res.data)
         .then(res => {
           restaurants.forEach(restaurant => {
             res.data.map(favoris =>
@@ -73,48 +85,11 @@ class App extends Component {
                 : null
             );
           });
-          console.log(favorites);
-          this.setState({ restaurantsFiltered: favorites, favorites });
+          return this.setState({ favorites });
         })
-        .catch(err => console.log(err));
+        .catch(error => this.notify('error', error.flash));
     }
   };
-  // .then(e => this.setState({ flash: 'Super !' }))
-  // .then(console.log(this.state.flash));
-  // };
-  // }
-  // toast.info(
-  //   "Vous devez être connecté afin d'ajouter, un restaurant comme favoris.",
-  //   {
-  //     position: 'top-right',
-  //     autoClose: 2000,
-  //     hideProgressBar: true,
-  //     closeOnClick: false,
-  //     pauseOnHover: true,
-  //     draggable: true,
-  //     // onClose: () => history.push('/restaurants'),
-  //   }
-  // );
-  // const a = [];
-  // const { restaurants } = this.state;
-  // axios
-  //   .get(`/api/favorites/${user}`)
-  //   .then(res => res.data)
-  //   .then(favorites =>
-  //     restaurants.forEach(restaurant => {
-  //       favorites.map(favoris =>
-  //         favoris.id_restaurant === restaurant.id ? a.push(restaurant) : null
-  //       );
-  //     })
-  //   )
-  //   .then(
-  //     this.setState({
-  //       restaurantsFiltered: a,
-  //       loading: false,
-  //       favoritesMode: true,
-  //     })
-  //   )
-  //   .catch(error => this.setState({ flash: error.flash }));
 
   handleAuthenticated = (user, token) =>
     this.setState({
@@ -137,19 +112,27 @@ class App extends Component {
     });
   };
 
-  // showFavorites = () => {
-  //   // this.getfavorites(user);
-  //   console.log(user);
-  // };
+  showFavorites = () => {
+    const { favorites } = this.state;
+    this.getFavorites();
+    this.setState({ restaurantsFiltered: favorites });
+  };
+
+  addFavoriteList = restaurant => {
+    let { favorites } = this.state;
+    favorites.push(restaurant);
+    this.setState({ favorites });
+  };
 
   render() {
     const { classes } = this.props;
     const { loading, restaurantsFiltered, user, token, favorites } = this.state;
     return (
       <div>
+        <ToastContainer />
         <NavBar
           arrondissement={this.filter}
-          favorites={this.getFavorites}
+          favorites={this.showFavorites}
           allRestaurants={this.getAllRestaurants}
           user={user}
         />
@@ -170,13 +153,17 @@ class App extends Component {
                     user={user}
                     token={token}
                     favResto={favorites}
+                    addFavoriteList={this.addFavoriteList}
                   />
                 )}
               />
               <Route
                 path="/signin"
                 render={() => (
-                  <SignIn isAuthenticated={this.handleAuthenticated} />
+                  <SignIn
+                    isAuthenticated={this.handleAuthenticated}
+                    favorites={this.getFavorites}
+                  />
                 )}
               />
               <Route path="/signup" render={() => <SignUp />} />

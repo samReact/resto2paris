@@ -39,13 +39,13 @@ class NavBar extends Component {
   };
 
   getFavorites = () => {
-    console.log('hello');
+    const { favorites } = this.props;
     this.setState({ anchorEl: null });
-    this.props.favorites();
+    favorites();
   };
 
   render() {
-    const { anchorEl, isAuthenticated } = this.state;
+    const { anchorEl } = this.state;
     const {
       classes,
       history,
@@ -59,7 +59,6 @@ class NavBar extends Component {
         <AppBar position="fixed">
           <Toolbar variant="dense">
             <IconButton
-              // className={classes.menuButton}
               color="inherit"
               aria-label="Menu"
               aria-owns={anchorEl ? 'simple-menu' : null}
@@ -82,7 +81,6 @@ class NavBar extends Component {
                 style={{ fontSize: '15px' }}
                 variant="title"
                 color="inherit"
-                // className={classes.grow}
               >
                 {user.name}
               </Typography>
@@ -96,7 +94,7 @@ class NavBar extends Component {
               transitionDuration={1000}
             >
               <MenuItem
-                onClick={e => {
+                onClick={() => {
                   this.setState({ anchorEl: null });
                   allRestaurants();
                   history.push('/');
@@ -105,7 +103,7 @@ class NavBar extends Component {
                 Les restaurants
               </MenuItem>
               <MenuItem
-                onClick={e => {
+                onClick={() => {
                   this.setState({ anchorEl: null });
                   history.push('/map');
                 }}
@@ -113,16 +111,12 @@ class NavBar extends Component {
                 Carte des restaurants
               </MenuItem>
 
-              <MenuItem onClick={e => this.getFavorites()}>
+              <MenuItem onClick={() => this.getFavorites()}>
                 Mes Favoris
               </MenuItem>
               <MenuItem
-                onClick={e => {
-                  // this.props.favorites(54);
-                  // this.setState({ anchorEl: null });
+                onClick={() => {
                   history.push('/signin');
-
-                  // this.handleFavorites();
                 }}
               >
                 Login

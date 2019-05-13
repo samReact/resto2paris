@@ -1,13 +1,15 @@
-import db from "../db.1.json";
-import axios from "axios";
+import axios from 'axios';
+import db from '../db.1.json';
 
-export const InitDb = () => {
+const InitDb = () => {
   axios
     .post(
-      "api/record",
+      'api/record',
       // method: "post",
       db
     )
     .then(res => console.log(res))
     .catch(err => console.log(err));
 };
+
+export default InitDb;

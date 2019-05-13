@@ -54,13 +54,9 @@ class CardList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hasError: false,
       open: false,
       name: '',
-      favorite: false,
-      flash: '',
     };
-    this.handleExpandClick = this.handleExpandClick.bind(this);
   }
 
   handleClose = () => {
@@ -69,54 +65,47 @@ class CardList extends Component {
     });
   };
 
-  createFavorite = restaurant => {
-    const { token, user } = this.props;
+  notify = (type, text) => {
+    toast(text, {
+      position: 'top-right',
+      autoClose: 2000,
+      hideProgressBar: true,
+      type,
+      closeOnClick: false,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  };
 
+  recordFavorite = restaurant => {
+    const { token, user, addFavoriteList } = this.props;
     if (token) {
       const restaurantId = restaurant.id;
       const userId = user.id;
-      return (
-        axios
-          .post(
-            `/api/favorites/${restaurant.id}`,
-            { restaurantId, userId },
-            {
-              headers: { Authorization: `bearer ${token}` },
-            }
-          )
-          // .then(res => res.data)
-          .then(res => console.log(res.data))
-          .catch(err => console.log(err))
-      );
+      return axios
+        .post(
+          `/api/favorites/${restaurant.id}`,
+          { restaurantId, userId },
+          {
+            headers: { Authorization: `bearer ${token}` },
+          }
+        )
+        .then(() => addFavoriteList(restaurant))
+        .catch(err => this.notify('error', 'Vous devez être connecté !'));
     }
-
-    // .then(e => this.setState({ flash: 'Super !' }))
-    // .then(console.log(this.state.flash));
-    // };
-    // }
-    toast.info(
-      "Vous devez être connecté afin d'ajouter, un restaurant comme favoris.",
-      {
-        position: 'top-right',
-        autoClose: 2000,
-        hideProgressBar: true,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: true,
-        // onClose: () => history.push('/restaurants'),
-      }
-    );
+    return this.notify('info', 'Vous devez être connecté !');
   };
 
-  handleExpandClick(b) {
+  handleExpandClick = b => {
     return () => {
       this.setState({ open: true, name: b });
     };
-  }
+  };
 
   render() {
     const { classes, restaurants, favResto } = this.props;
-    console.log(favResto);
+    const { expanded, open, name } = this.state;
+
     return (
       <div className="container" style={{ paddingTop: 50 }}>
         <Grid container spacing={8}>
@@ -126,16 +115,16 @@ class CardList extends Component {
                 <CardHeader
                   avatar={
                     <Avatar className={classes.avatar}>
-  <RestaurantIcon />
-</Avatar>
+                      <RestaurantIcon />
+                    </Avatar>
                   }
                   action={
                     <IconButton
-  restaurant={restaurant}
-  onClick={() => this.createFavorite(restaurant)}
-  aria-label="Add to favorites"
->
-  <FavoriteIcon
+                      restaurant={restaurant}
+                      onClick={() => this.recordFavorite(restaurant)}
+                      aria-label="Add to favorites"
+                    >
+                      <FavoriteIcon
                         color={
                           favResto.length
                             ? favResto.find(elt => elt.id == restaurant.id)
@@ -144,7 +133,7 @@ class CardList extends Component {
                             : 'disabled'
                         }
                       />
-</IconButton>
+                    </IconButton>
                   }
                   title={`${restaurant.name}`}
                   subheader={`${restaurant.mainCategory} ${
@@ -178,7 +167,7 @@ class CardList extends Component {
                   <Button
                     className={classes.expand}
                     onClick={this.handleExpandClick(restaurant)}
-                    aria-expanded={this.state.expanded}
+                    aria-expanded={expanded}
                     aria-label="Show more"
                   >
                     En savoir plus
@@ -189,11 +178,7 @@ class CardList extends Component {
           ))}
         </Grid>
         <ToastContainer />
-        <ModalCard
-          open={this.state.open}
-          close={this.handleClose}
-          restaurant={this.state.name}
-        />
+        <ModalCard open={open} close={this.handleClose} restaurant={name} />
       </div>
     );
   }
