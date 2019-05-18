@@ -29,9 +29,9 @@ class AuthController {
       if (!user)
         return res
           .status(400)
-          .json({ message: info.message, toast: info.toast });
+          .send({ message: info.message, toast: info.toast });
       const token = jwt.sign(user.email, "yoursecret");
-      return res.json({
+      return res.send({
         user,
         token,
         message: info.message,

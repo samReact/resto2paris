@@ -71,6 +71,7 @@ class SignUp extends Component {
   handleSubmit = async e => {
     e.preventDefault();
     const { post } = this.state;
+    const { history } = this.props;
     await axios
       .post('/auth/signup', post)
 
@@ -78,12 +79,10 @@ class SignUp extends Component {
       .then(res => {
         this.setState({
           flash: res.flash,
-          // open: true,
-          // isAuthenticated: true,
         });
       })
+      .then(() => history.push('/signin'))
       .catch(err => this.setState({ flash: err.flash }));
-    // .then(this.props.history.push('/restaurants'));
     this.notify();
   };
 

@@ -76,7 +76,20 @@ class ApiController {
       }
     );
     if (err) res.status(500).send({ flash: error.message });
-    else res.status(200).send({ flash: "User created !" });
+    else res.status(200).send({ flash: "Favorite added !" });
+    res.end();
+  }
+
+  removeFavorite(req, res, err) {
+    const { userId, restaurantId } = req.body;
+    connection.query(
+      `DELETE FROM favorites WHERE user_id = ${userId} AND restaurant_id = ${restaurantId}`,
+      error => {
+        if (error) throw error;
+      }
+    );
+    if (err) res.status(500).send({ flash: error.message });
+    else res.status(200).send({ flash: "Favorite removed !" });
     res.end();
   }
 

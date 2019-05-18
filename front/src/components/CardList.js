@@ -77,24 +77,52 @@ class CardList extends Component {
     });
   };
 
-  recordFavorite = async restaurant => {
-    const { isAuthenticated, user, addFavoriteList } = this.props;
+  handleFavorite = restaurant => {
+    const { favorites, isAuthenticated } = this.props;
     if (isAuthenticated) {
-      const token = await localStorage.getItem('token');
-      const restaurantId = restaurant.id;
-      const userId = user.id;
-      return axios
-        .post(
-          `/api/favorites/${restaurant.id}`,
-          { restaurantId, userId },
-          {
-            headers: { Authorization: `bearer ${token}` },
-          }
-        )
-        .then(() => addFavoriteList(restaurant))
-        .catch(err => this.notify('error', 'Vous devez être connecté !'));
+      const isFavorite = favorites.find(
+        favoriteRestaurant => favoriteRestaurant.id === restaurant.id
+      );
+      if (isFavorite) {
+        return this.removeFavorite(restaurant);
+      }
+      return this.recordFavorite(restaurant);
     }
     return this.notify('info', 'Vous devez être connecté !');
+  };
+
+  recordFavorite = async restaurant => {
+    const { user, addFavoriteList } = this.props;
+    const token = await localStorage.getItem('token');
+    const restaurantId = restaurant.id;
+    const userId = user.id;
+    return axios
+      .post(
+        `/api/recordfavorites/${restaurant.id}`,
+        { restaurantId, userId },
+        {
+          headers: { Authorization: `bearer ${token}` },
+        }
+      )
+      .then(() => addFavoriteList(restaurant))
+      .catch(err => this.notify('error', err));
+  };
+
+  removeFavorite = async restaurant => {
+    const { user, removeFavoriteList } = this.props;
+    const token = await localStorage.getItem('token');
+    const restaurantId = restaurant.id;
+    const userId = user.id;
+    return axios
+      .post(
+        `/api/removefavorites/${restaurant.id}`,
+        { restaurantId, userId },
+        {
+          headers: { Authorization: `bearer ${token}` },
+        }
+      )
+      .then(() => removeFavoriteList(restaurant))
+      .catch(err => this.notify('error', err));
   };
 
   handleExpandClick = b => {
@@ -104,7 +132,7 @@ class CardList extends Component {
   };
 
   render() {
-    const { classes, restaurants, favResto } = this.props;
+    const { classes, restaurants, favorites } = this.props;
     const { expanded, open, name } = this.state;
 
     return (
@@ -122,13 +150,14 @@ class CardList extends Component {
                   action={
                     <IconButton
                       restaurant={restaurant}
-                      onClick={() => this.recordFavorite(restaurant)}
+                      // onClick={() => this.recordFavorite(restaurant)}
+                      onClick={() => this.handleFavorite(restaurant)}
                       aria-label="Add to favorites"
                     >
                       <FavoriteIcon
                         color={
-                          favResto.length
-                            ? favResto.find(elt => elt.id === restaurant.id)
+                          favorites.length
+                            ? favorites.find(elt => elt.id === restaurant.id)
                               ? 'secondary'
                               : 'disabled'
                             : 'disabled'

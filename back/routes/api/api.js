@@ -30,7 +30,7 @@ router.post("/getFavorites/:id_user", (req, res, next) => {
   })(req, res, next);
 });
 
-router.post("/favorites/:id_restaurant", (req, res, next) => {
+router.post("/recordfavorites/:id_restaurant", (req, res, next) => {
   passport.authenticate("jwt", { session: false }, (err, user, info) => {
     if (err) {
       return res.status(401);
@@ -42,6 +42,21 @@ router.post("/favorites/:id_restaurant", (req, res, next) => {
       });
     }
     controller.recordFavorite(req, res);
+  })(req, res, next);
+});
+
+router.post("/removefavorites/:id_restaurant", (req, res, next) => {
+  passport.authenticate("jwt", { session: false }, (err, user, info) => {
+    if (err) {
+      return res.status(401);
+    }
+    if (!user) {
+      return res.send({
+        message: "not connected",
+        user: user
+      });
+    }
+    controller.removeFavorite(req, res);
   })(req, res, next);
 });
 

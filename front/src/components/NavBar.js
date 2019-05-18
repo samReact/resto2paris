@@ -38,12 +38,6 @@ class NavBar extends Component {
     this.setState({ anchorEl: null });
   };
 
-  getFavorites = () => {
-    const { favorites } = this.props;
-    this.setState({ anchorEl: null });
-    favorites();
-  };
-
   render() {
     const { anchorEl } = this.state;
     const {
@@ -54,6 +48,7 @@ class NavBar extends Component {
       allRestaurants,
       isAuthenticated,
       signout,
+      restaurants,
     } = this.props;
 
     return (
@@ -114,7 +109,12 @@ class NavBar extends Component {
               </MenuItem>
               {isAuthenticated ? (
                 <div>
-                  <MenuItem onClick={() => this.getFavorites()}>
+                  <MenuItem
+                    onClick={() => {
+                      this.setState({ anchorEl: null });
+                      history.push('/favorites');
+                    }}
+                  >
                     Mes Favoris
                   </MenuItem>
                   <MenuItem
@@ -137,7 +137,10 @@ class NavBar extends Component {
               )}
             </Menu>
 
-            <SelectList arrondissement={arrondissement} />
+            <SelectList
+              arrondissement={arrondissement}
+              restaurants={restaurants}
+            />
           </Toolbar>
         </AppBar>
       </div>

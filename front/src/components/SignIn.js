@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import red from '@material-ui/core/colors/red';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
 const styles = () => ({
   avatar: {
@@ -48,22 +49,16 @@ class SignIn extends Component {
     e.preventDefault();
     const { handleAuthenticated, favorites } = this.props;
     const { post } = this.state;
-
-    fetch('/auth/signin', {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-      }),
-      body: JSON.stringify(post),
-    })
-      .then(res => res.json())
+    axios
+      .post('/auth/signin', post)
+      .then(res => res.data)
       .then(async res => {
         await handleAuthenticated(res.user, true);
         await localStorage.setItem('token', res.token);
         await favorites();
         this.notify(res.toast, res.message);
       })
-      .catch(err => console.log(err));
+      .catch(err => this.notify('error', err));
   };
 
   updateEmailField(e) {

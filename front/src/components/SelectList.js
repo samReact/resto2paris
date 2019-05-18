@@ -19,10 +19,20 @@ const styles = theme => ({
   },
 });
 
-const SelectList = ({ classes, arrondissement }) => {
+const SelectList = ({ classes, arrondissement, restaurants }) => {
   const handleChange = () => event => {
     arrondissement(event.target.value);
   };
+  const getArea = () => {
+    let filteredArea = [];
+    restaurants.map(restaurant =>
+      filteredArea.find(address => address.area === restaurant.address2)
+        ? null
+        : filteredArea.push({ id: restaurant.id, area: restaurant.address2 })
+    );
+    return filteredArea;
+  };
+  const filteredArea = getArea();
 
   return (
     <FormControl className={classes.formControl}>
@@ -32,7 +42,7 @@ const SelectList = ({ classes, arrondissement }) => {
         htmlFor="age-native-simple"
         focused={false}
       >
-        Ardt de Paris
+        Quartier de Paris
       </InputLabel>
       <Select
         className={classes.select}
@@ -44,26 +54,12 @@ const SelectList = ({ classes, arrondissement }) => {
         }}
       >
         <option value="tous">Tous</option>
-        <option value="1er">1er</option>
-        <option value="2e">2ème</option>
-        <option value="3e">3ème</option>
-        <option value="4e">4ème</option>
-        <option value="5e">5ème</option>
-        <option value="6e">6ème</option>
-        <option value="7e">7ème</option>
-        <option value="8e">8ème</option>
-        <option value="9e">9ème</option>
-        <option value="10e">10ème</option>
-        <option value="11e">11ème</option>
-        <option value="12e">12ème</option>
-        <option value="13e">13ème</option>
-        <option value="14e">14ème</option>
-        <option value="15e">15ème</option>
-        <option value="16e">16ème</option>
-        <option value="17e">17ème</option>
-        <option value="18e">18ème</option>
-        <option value="19e">19ème</option>
-        <option value="20e">20ème</option>
+        {filteredArea.map(restaurant => (
+          <option key={restaurant.id} value={restaurant.area}>
+            {restaurant.area}
+          </option>
+        ))}
+        ?
       </Select>
     </FormControl>
   );

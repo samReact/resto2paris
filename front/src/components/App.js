@@ -29,6 +29,7 @@ class App extends Component {
       restaurantsFiltered: [],
       loading: true,
       favorites: [],
+      favoritesFiltered: [],
       user: null,
       isAuthenticated: false,
     };
@@ -59,7 +60,6 @@ class App extends Component {
           restaurants: res.data,
           restaurantsFiltered: res.data,
           loading: false,
-          favorites: [],
         });
       })
       .catch(error => this.notify('error', error.flash));
@@ -86,7 +86,7 @@ class App extends Component {
                 : null
             );
           });
-          return this.setState({ favorites });
+          return this.setState({ favorites, favoritesFiltered: favorites });
         })
         .catch(error => this.notify('error', error.flash));
     }
@@ -100,23 +100,22 @@ class App extends Component {
 
   filter = arrondissement => {
     const { restaurants, favorites } = this.state;
-    const filtered = (favorites.length ? favorites : restaurants).filter(
-      elt => elt.address2 === arrondissement
+    const restaurantsFiltered = restaurants.filter(
+      restaurant => restaurant.address2 === arrondissement
+    );
+    const favoritesFiltered = favorites.filter(
+      favorite => favorite.address2 === arrondissement
     );
 
     if (arrondissement === 'tous')
       return this.setState({
-        restaurantsFiltered: favorites.length ? favorites : restaurants,
+        restaurantsFiltered: restaurants,
+        favoritesFiltered: favorites,
       });
     return this.setState({
-      restaurantsFiltered: filtered,
+      restaurantsFiltered,
+      favoritesFiltered,
     });
-  };
-
-  showFavorites = () => {
-    const { favorites } = this.state;
-    this.getFavorites();
-    this.setState({ restaurantsFiltered: favorites });
   };
 
   addFavoriteList = restaurant => {
@@ -125,12 +124,30 @@ class App extends Component {
     this.setState({ favorites });
   };
 
+  removeFavoriteList = restaurant => {
+    const { favorites } = this.state;
+    const updatedFavorites = favorites.filter(
+      favorite => favorite.id !== restaurant.id
+    );
+    this.setState({
+      favorites: updatedFavorites,
+      favoritesFiltered: updatedFavorites,
+    });
+  };
+
   signOut = () => {
     const { history } = this.props;
     axios
       .get('/auth/signout')
       .then(res => res.data)
-      .then(res => this.setState({ user: res.user, isAuthenticated: false }))
+      .then(res =>
+        this.setState({
+          user: res.user,
+          isAuthenticated: false,
+          favorites: [],
+          favoritesFiltered: [],
+        })
+      )
       .then(() => localStorage.removeItem('token'))
       .then(() => this.getAllRestaurants())
       .then(() => this.notify('success', 'Au revoir !'))
@@ -142,20 +159,23 @@ class App extends Component {
     const {
       loading,
       restaurantsFiltered,
+      favoritesFiltered,
       user,
       isAuthenticated,
       favorites,
+      restaurants,
     } = this.state;
+
     return (
       <div>
         <ToastContainer />
         <NavBar
           arrondissement={this.filter}
-          favorites={this.showFavorites}
           allRestaurants={this.getAllRestaurants}
           user={user}
           isAuthenticated={isAuthenticated}
           signout={this.signOut}
+          restaurants={restaurants}
         />
         <div className="mt-5">
           {loading ? (
@@ -173,8 +193,23 @@ class App extends Component {
                     {...props}
                     user={user}
                     isAuthenticated={isAuthenticated}
-                    favResto={favorites}
                     addFavoriteList={this.addFavoriteList}
+                    removeFavoriteList={this.removeFavoriteList}
+                    favorites={favorites}
+                  />
+                )}
+              />
+              <Route
+                path="/favorites"
+                render={props => (
+                  <CardList
+                    restaurants={favoritesFiltered}
+                    {...props}
+                    user={user}
+                    isAuthenticated={isAuthenticated}
+                    addFavoriteList={this.addFavoriteList}
+                    removeFavoriteList={this.removeFavoriteList}
+                    favorites={favorites}
                   />
                 )}
               />
