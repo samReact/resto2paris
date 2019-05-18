@@ -77,9 +77,10 @@ class CardList extends Component {
     });
   };
 
-  recordFavorite = restaurant => {
-    const { token, user, addFavoriteList } = this.props;
-    if (token) {
+  recordFavorite = async restaurant => {
+    const { isAuthenticated, user, addFavoriteList } = this.props;
+    if (isAuthenticated) {
+      const token = await localStorage.getItem('token');
       const restaurantId = restaurant.id;
       const userId = user.id;
       return axios
@@ -127,7 +128,7 @@ class CardList extends Component {
                       <FavoriteIcon
                         color={
                           favResto.length
-                            ? favResto.find(elt => elt.id == restaurant.id)
+                            ? favResto.find(elt => elt.id === restaurant.id)
                               ? 'secondary'
                               : 'disabled'
                             : 'disabled'

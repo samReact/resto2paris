@@ -52,6 +52,8 @@ class NavBar extends Component {
       user,
       arrondissement,
       allRestaurants,
+      isAuthenticated,
+      signout,
     } = this.props;
 
     return (
@@ -110,17 +112,29 @@ class NavBar extends Component {
               >
                 Carte des restaurants
               </MenuItem>
-
-              <MenuItem onClick={() => this.getFavorites()}>
-                Mes Favoris
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  history.push('/signin');
-                }}
-              >
-                Login
-              </MenuItem>
+              {isAuthenticated ? (
+                <div>
+                  <MenuItem onClick={() => this.getFavorites()}>
+                    Mes Favoris
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      this.setState({ anchorEl: null });
+                      signout();
+                    }}
+                  >
+                    Logout
+                  </MenuItem>
+                </div>
+              ) : (
+                <MenuItem
+                  onClick={() => {
+                    history.push('/signin');
+                  }}
+                >
+                  Login
+                </MenuItem>
+              )}
             </Menu>
 
             <SelectList arrondissement={arrondissement} />

@@ -30,7 +30,7 @@ class App extends Component {
       loading: true,
       favorites: [],
       user: null,
-      token: null,
+      isAuthenticated: false,
     };
   }
 
@@ -65,9 +65,10 @@ class App extends Component {
       .catch(error => this.notify('error', error.flash));
 
   getFavorites = () => {
-    const { token, user, restaurants } = this.state;
+    const { isAuthenticated, user, restaurants } = this.state;
     const favorites = [];
-    if (token) {
+    if (isAuthenticated) {
+      const token = localStorage.getItem('token');
       const { id } = user;
       axios
         .post(
@@ -91,10 +92,10 @@ class App extends Component {
     }
   };
 
-  handleAuthenticated = (user, token) =>
+  handleAuthenticated = (user, isAuthenticated) =>
     this.setState({
       user,
-      token,
+      isAuthenticated,
     });
 
   filter = arrondissement => {
@@ -119,14 +120,32 @@ class App extends Component {
   };
 
   addFavoriteList = restaurant => {
-    let { favorites } = this.state;
+    const { favorites } = this.state;
     favorites.push(restaurant);
     this.setState({ favorites });
   };
 
+  signOut = () => {
+    const { history } = this.props;
+    axios
+      .get('/auth/signout')
+      .then(res => res.data)
+      .then(res => this.setState({ user: res.user, isAuthenticated: false }))
+      .then(() => localStorage.removeItem('token'))
+      .then(() => this.getAllRestaurants())
+      .then(() => this.notify('success', 'Au revoir !'))
+      .then(() => history.push('/'));
+  };
+
   render() {
     const { classes } = this.props;
-    const { loading, restaurantsFiltered, user, token, favorites } = this.state;
+    const {
+      loading,
+      restaurantsFiltered,
+      user,
+      isAuthenticated,
+      favorites,
+    } = this.state;
     return (
       <div>
         <ToastContainer />
@@ -135,6 +154,8 @@ class App extends Component {
           favorites={this.showFavorites}
           allRestaurants={this.getAllRestaurants}
           user={user}
+          isAuthenticated={isAuthenticated}
+          signout={this.signOut}
         />
         <div className="mt-5">
           {loading ? (
@@ -151,7 +172,7 @@ class App extends Component {
                     restaurants={restaurantsFiltered}
                     {...props}
                     user={user}
-                    token={token}
+                    isAuthenticated={isAuthenticated}
                     favResto={favorites}
                     addFavoriteList={this.addFavoriteList}
                   />
@@ -161,7 +182,7 @@ class App extends Component {
                 path="/signin"
                 render={() => (
                   <SignIn
-                    isAuthenticated={this.handleAuthenticated}
+                    handleAuthenticated={this.handleAuthenticated}
                     favorites={this.getFavorites}
                   />
                 )}

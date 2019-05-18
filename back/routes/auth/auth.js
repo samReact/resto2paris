@@ -11,5 +11,9 @@ const controller = new AuthController();
 router.get("/map", (req, res) => controller.loading(req, res));
 router.post("/signup", (req, res) => controller.recordUser(req, res));
 router.post("/signin", (req, res) => controller.signin(req, res));
+router.get("/signout", (req, res) => {
+  req.logout();
+  res.send({ user: null });
+});
 
 module.exports = router;

@@ -10,7 +10,7 @@ import red from '@material-ui/core/colors/red';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const styles = theme => ({
+const styles = () => ({
   avatar: {
     backgroundColor: red[500],
     width: 120,
@@ -46,7 +46,7 @@ class SignIn extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    const { isAuthenticated, favorites } = this.props;
+    const { handleAuthenticated, favorites } = this.props;
     const { post } = this.state;
 
     fetch('/auth/signin', {
@@ -57,17 +57,13 @@ class SignIn extends Component {
       body: JSON.stringify(post),
     })
       .then(res => res.json())
-      .then(
-        res => {
-          this.setState({
-            flash: res.message,
-          });
-          isAuthenticated(res.user, res.token);
-          favorites();
-          this.notify(res.toast, res.message);
-        },
-        err => console.log('erreur')
-      );
+      .then(async res => {
+        await handleAuthenticated(res.user, true);
+        await localStorage.setItem('token', res.token);
+        await favorites();
+        this.notify(res.toast, res.message);
+      })
+      .catch(err => console.log(err));
   };
 
   updateEmailField(e) {
