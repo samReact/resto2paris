@@ -12,13 +12,14 @@ import SignIn from './SignIn';
 import SignUp from './SignUp';
 // import * as init from './InitDb';
 
-const styles = () => ({
+const styles = theme => ({
   spinner: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     height: '100vh',
   },
+  toolbar: theme.mixins.toolbar,
 });
 
 class App extends Component {
@@ -151,7 +152,13 @@ class App extends Component {
       .then(() => localStorage.removeItem('token'))
       .then(() => this.getAllRestaurants())
       .then(() => this.notify('success', 'Au revoir !'))
-      .then(() => history.push('/'));
+      .then(() => history.push('/'))
+      .catch(error => {
+        if (error.response) {
+          return this.notify('error', error.response.data.message);
+        }
+        return this.notify('error', error.message);
+      });
   };
 
   render() {
@@ -177,7 +184,9 @@ class App extends Component {
           signout={this.signOut}
           restaurants={restaurants}
         />
-        <div className="mt-5">
+        <div className={classes.toolbar} />
+
+        <div>
           {loading ? (
             <div className={classes.spinner}>
               <CircularProgress size={100} thickness={5} />
@@ -227,7 +236,11 @@ class App extends Component {
               <Route
                 path="/map"
                 render={props => (
-                  <MapList restaurants={restaurantsFiltered} {...props} />
+                  <MapList
+                    restaurants={restaurantsFiltered}
+                    favorites={favoritesFiltered}
+                    {...props}
+                  />
                 )}
               />
             </Switch>

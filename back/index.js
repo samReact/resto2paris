@@ -39,20 +39,20 @@ app.use("/api", apiRouter);
 /**
  * 404 Page
  */
-app.use((req, res) => {
-  res.status(404);
-  res.render("errors/404");
-});
 
 // Handle 500
-app.use((error, req, res, next) => {
-  res.status(500);
-  console.error(colors.bold.red.underline(error.stack));
-  res.render("errors/500", {
-    message: error.message,
-    stack: error.stack,
-    error: error
-  });
+// app.use((error, req, res, next) => {
+//   new Error(error);
+//   console.error(colors.bold.red.underline(error.stack));
+//   res.json({
+//     message: error.message,
+//     stack: error.stack,
+//     error: error
+//   });
+// });
+
+app.use((err, req, res, next) => {
+  res.status(500).json({ message: err.message });
 });
 
 /*********************************************************************************************************************************************

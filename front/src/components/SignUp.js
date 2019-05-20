@@ -15,8 +15,9 @@ import red from '@material-ui/core/colors/red';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
+import validator from 'validator';
 
-const styles = theme => ({
+const styles = () => ({
   avatar: {
     backgroundColor: red[500],
     width: 120,
@@ -35,70 +36,94 @@ class SignUp extends Component {
         lastname: '',
       },
       flash: '',
-      success: false,
-      open: false,
       password2: '',
       isAuthenticated: false,
-
-      // password2: ""
+      emailError: false,
+      passwordError: false,
+      nameError: false,
+      lastnameError: false,
+      password2Error: false,
     };
-    this.updateEmailField = this.updateEmailField.bind(this);
   }
 
-  notify = () => {
-    const { flash } = this.state;
-    // const { history } = this.props;
-
-    toast.success(flash, {
+  notify = (type, text) => {
+    toast(text, {
       position: 'top-right',
-      autoClose: 1500,
+      autoClose: 2000,
       hideProgressBar: true,
+      type,
       closeOnClick: false,
       pauseOnHover: true,
       draggable: true,
-      // onClose: () => history.push('/restaurants'),
     });
-  };
-
-  handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    this.setState({ open: false });
   };
 
   handleSubmit = async e => {
     e.preventDefault();
-    const { post } = this.state;
+    const { post, password2 } = this.state;
     const { history } = this.props;
+
+    if (
+      validator.isEmpty(post.email) ||
+      validator.isEmpty(post.password) ||
+      validator.isEmpty(post.lastname) ||
+      validator.isEmpty(post.name) ||
+      validator.isEmpty(password2)
+    ) {
+      return this.setState({
+        emailError: validator.isEmpty(post.email),
+        passwordError: validator.isEmpty(post.password),
+        nameError: validator.isEmpty(post.name),
+        lastnameError: validator.isEmpty(post.lastname),
+        password2Error: validator.isEmpty(password2),
+      });
+    }
+    if (!validator.equals(post.password, password2)) {
+      return this.setState({ errorValidationPassword: true });
+    }
     await axios
       .post('/auth/signup', post)
-
       .then(res => res.data)
       .then(res => {
-        this.setState({
-          flash: res.flash,
-        });
+        this.notify(res.toast, res.message);
       })
       .then(() => history.push('/signin'))
-      .catch(err => this.setState({ flash: err.flash }));
-    this.notify();
+      .catch(error => {
+        if (error.response) {
+          if (error.response.status === 400) {
+            return this.notify('error', error.response.data.errors);
+          }
+          if (error.response.status === 500) {
+            return this.notify('error', error.response.data.message);
+          }
+        }
+        return this.notify('error', error.message);
+      });
   };
 
-  updateEmailField(e) {
+  updateEmailField = e => {
     const { post } = this.state;
+
     this.setState({
       post: {
         ...post,
         [e.target.id]: e.target.value,
       },
     });
-  }
+  };
 
   render() {
     const { classes } = this.props;
-    const { isAuthenticated } = this.state;
+    const {
+      isAuthenticated,
+      nameError,
+      emailError,
+      lastnameError,
+      password2Error,
+      passwordError,
+      errorValidationPassword,
+    } = this.state;
+
     return (
       <Grid
         container
@@ -143,6 +168,7 @@ class SignUp extends Component {
                     <h3>Sign Up !</h3>
                     <FormGroup>
                       <TextField
+                        error={nameError}
                         type="text"
                         required
                         label="Prenom"
@@ -150,6 +176,7 @@ class SignUp extends Component {
                         onChange={e => this.updateEmailField(e)}
                       />
                       <TextField
+                        error={lastnameError}
                         type="text"
                         required
                         label="Nom"
@@ -157,6 +184,7 @@ class SignUp extends Component {
                         onChange={e => this.updateEmailField(e)}
                       />
                       <TextField
+                        error={emailError}
                         type="email"
                         required
                         label="Email"
@@ -164,6 +192,7 @@ class SignUp extends Component {
                         onChange={e => this.updateEmailField(e)}
                       />
                       <TextField
+                        error={passwordError}
                         type="password"
                         required
                         label="Password"
@@ -171,6 +200,7 @@ class SignUp extends Component {
                         onChange={e => this.updateEmailField(e)}
                       />
                       <TextField
+                        error={password2Error || errorValidationPassword}
                         type="password"
                         required
                         label="Password2"
@@ -179,6 +209,11 @@ class SignUp extends Component {
                           this.setState({ password2: e.target.value })
                         }
                       />
+                      {errorValidationPassword && (
+                        <div style={{ color: 'red' }}>
+                          Les deux mots de passe doivent être identiques
+                        </div>
+                      )}
                     </FormGroup>
                     <Grid>
                       <Grid container justify="flex-end">

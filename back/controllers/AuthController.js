@@ -12,15 +12,18 @@ class AuthController {
    * @param {*} res
    */
 
-  recordUser(req, res, err) {
+  signUp(req, res, next) {
     let user = req.body;
     user = bcrypt.hashPassword(user, user.password);
     connection.query("INSERT INTO users SET ?", user, (error, result) => {
-      if (error) throw error;
+      if (error) {
+        return next(error);
+      } else
+        res.status(201).json({
+          message: "Votre compte a été crée avec succès !",
+          toast: "success"
+        });
     });
-    if (err) res.status(500).json({ flash: error.message });
-    else res.status(200).json({ flash: "User created !" });
-    res.end();
   }
 
   signin(req, res) {
@@ -29,7 +32,7 @@ class AuthController {
       if (!user)
         return res
           .status(400)
-          .send({ message: info.message, toast: info.toast });
+          .json({ message: info.message, toast: info.toast });
       const token = jwt.sign(user.email, "yoursecret");
       return res.send({
         user,
@@ -38,6 +41,15 @@ class AuthController {
         toast: info.toast
       });
     })(req, res);
+  }
+
+  signout(req, res, err) {
+    if (err) {
+      return next(error);
+    } else {
+      req.logout();
+      res.send({ user: null });
+    }
   }
 }
 

@@ -31,7 +31,7 @@ class SignIn extends Component {
     this.updateEmailField = this.updateEmailField.bind(this);
   }
 
-  notify = (type, text) => {
+  notify = (type, text, path) => {
     const { history } = this.props;
     toast(text, {
       position: 'top-right',
@@ -41,7 +41,7 @@ class SignIn extends Component {
       closeOnClick: false,
       pauseOnHover: true,
       draggable: true,
-      onClose: () => history.push('/'),
+      onClose: () => history.push(path),
     });
   };
 
@@ -56,9 +56,17 @@ class SignIn extends Component {
         await handleAuthenticated(res.user, true);
         await localStorage.setItem('token', res.token);
         await favorites();
-        this.notify(res.toast, res.message);
+        this.notify(res.toast, res.message, '/');
       })
-      .catch(err => this.notify('error', err));
+      .catch(error => {
+        if (error.response) {
+          return this.notify(
+            error.response.data.toast,
+            error.response.data.message
+          );
+        }
+        return this.notify('error', error.message);
+      });
   };
 
   updateEmailField(e) {

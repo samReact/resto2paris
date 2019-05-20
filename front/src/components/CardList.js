@@ -20,6 +20,7 @@ import PropTypes from 'prop-types';
 import RestaurantIcon from '@material-ui/icons/Restaurant';
 import axios from 'axios';
 import ModalCard from './ModalCard';
+import cactus from '../assets/img/cactus.png';
 
 const styles = theme => ({
   card: {
@@ -105,7 +106,7 @@ class CardList extends Component {
         }
       )
       .then(() => addFavoriteList(restaurant))
-      .catch(err => this.notify('error', err));
+      .catch(err => this.notify('error', err.flash));
   };
 
   removeFavorite = async restaurant => {
@@ -122,7 +123,7 @@ class CardList extends Component {
         }
       )
       .then(() => removeFavoriteList(restaurant))
-      .catch(err => this.notify('error', err));
+      .catch(err => this.notify('error', err.flash));
   };
 
   handleExpandClick = b => {
@@ -134,6 +135,23 @@ class CardList extends Component {
   render() {
     const { classes, restaurants, favorites } = this.props;
     const { expanded, open, name } = this.state;
+
+    if (!restaurants.length) {
+      return (
+        <div
+          style={{
+            height: '100vh',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+          }}
+        >
+          <img src={cactus} height={120} width={120} alt="cactus" />
+          <h3>Pas de restaurant dans ce secteur...</h3>
+        </div>
+      );
+    }
 
     return (
       <div className="container" style={{ paddingTop: 50 }}>
@@ -209,6 +227,7 @@ class CardList extends Component {
         </Grid>
         <ToastContainer />
         <ModalCard open={open} close={this.handleClose} restaurant={name} />
+        <Button>More</Button>
       </div>
     );
   }

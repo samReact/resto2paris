@@ -14,8 +14,9 @@ const styles = theme => ({
   filled: {
     color: '#fff',
   },
-  select: {
+  root: {
     backgroundColor: '#fff',
+    paddingLeft: 5,
   },
 });
 
@@ -24,7 +25,7 @@ const SelectList = ({ classes, arrondissement, restaurants }) => {
     arrondissement(event.target.value);
   };
   const getArea = () => {
-    let filteredArea = [];
+    const filteredArea = [];
     restaurants.map(restaurant =>
       filteredArea.find(address => address.area === restaurant.address2)
         ? null
@@ -45,7 +46,7 @@ const SelectList = ({ classes, arrondissement, restaurants }) => {
         Quartier de Paris
       </InputLabel>
       <Select
-        className={classes.select}
+        className={classes.root}
         native
         onChange={handleChange('arrondissements')}
         inputProps={{

@@ -52,98 +52,98 @@ class NavBar extends Component {
     } = this.props;
 
     return (
-      <div className={classes.root}>
-        <AppBar position="fixed">
-          <Toolbar variant="dense">
-            <IconButton
-              color="inherit"
-              aria-label="Menu"
-              aria-owns={anchorEl ? 'simple-menu' : null}
-              aria-haspopup="true"
-              onClick={this.handleClick}
-            >
-              <MenuIcon />
-            </IconButton>
+      // <div className={classes.root}>
+      <AppBar position="fixed">
+        <Toolbar variant="dense">
+          <IconButton
+            color="inherit"
+            aria-label="Menu"
+            aria-owns={anchorEl ? 'simple-menu' : null}
+            aria-haspopup="true"
+            onClick={this.handleClick}
+          >
+            <MenuIcon />
+          </IconButton>
 
+          <Typography
+            style={{ fontSize: '20px' }}
+            variant="title"
+            color="inherit"
+            className={classes.grow}
+          >
+            Restos de Paris
+          </Typography>
+          {user ? (
             <Typography
-              style={{ fontSize: '20px' }}
+              style={{ fontSize: '15px' }}
               variant="title"
               color="inherit"
-              className={classes.grow}
             >
-              Restos de Paris
+              {user.name}
             </Typography>
-            {user ? (
-              <Typography
-                style={{ fontSize: '15px' }}
-                variant="title"
-                color="inherit"
-              >
-                {user.name}
-              </Typography>
-            ) : null}
+          ) : null}
 
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={this.handleClose}
-              transitionDuration={1000}
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={this.handleClose}
+            transitionDuration={1000}
+          >
+            <MenuItem
+              onClick={() => {
+                this.setState({ anchorEl: null });
+                allRestaurants();
+                history.push('/');
+              }}
             >
-              <MenuItem
-                onClick={() => {
-                  this.setState({ anchorEl: null });
-                  allRestaurants();
-                  history.push('/');
-                }}
-              >
-                Les restaurants
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  this.setState({ anchorEl: null });
-                  history.push('/map');
-                }}
-              >
-                Carte des restaurants
-              </MenuItem>
-              {isAuthenticated ? (
-                <div>
-                  <MenuItem
-                    onClick={() => {
-                      this.setState({ anchorEl: null });
-                      history.push('/favorites');
-                    }}
-                  >
-                    Mes Favoris
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      this.setState({ anchorEl: null });
-                      signout();
-                    }}
-                  >
-                    Logout
-                  </MenuItem>
-                </div>
-              ) : (
+              Les restaurants
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                this.setState({ anchorEl: null });
+                history.push('/map');
+              }}
+            >
+              Carte des restaurants
+            </MenuItem>
+            {isAuthenticated ? (
+              <div>
                 <MenuItem
                   onClick={() => {
-                    history.push('/signin');
+                    this.setState({ anchorEl: null });
+                    history.push('/favorites');
                   }}
                 >
-                  Login
+                  Mes Favoris
                 </MenuItem>
-              )}
-            </Menu>
+                <MenuItem
+                  onClick={() => {
+                    this.setState({ anchorEl: null });
+                    signout();
+                  }}
+                >
+                  Logout
+                </MenuItem>
+              </div>
+            ) : (
+              <MenuItem
+                onClick={() => {
+                  history.push('/signin');
+                }}
+              >
+                Login
+              </MenuItem>
+            )}
+          </Menu>
 
-            <SelectList
-              arrondissement={arrondissement}
-              restaurants={restaurants}
-            />
-          </Toolbar>
-        </AppBar>
-      </div>
+          <SelectList
+            arrondissement={arrondissement}
+            restaurants={restaurants}
+          />
+        </Toolbar>
+      </AppBar>
+      // </div>
     );
   }
 }

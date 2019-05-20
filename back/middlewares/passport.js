@@ -15,7 +15,6 @@ passport.use(
       connection.query(sql, username, (error, user) => {
         if (error) {
           return cb(error);
-          // throw error;
         }
         if (!user.length) {
           return cb(null, false, {

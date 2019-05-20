@@ -40,16 +40,16 @@ class ApiController {
     );
 
     if (err) res.status(500).json({ flash: error.message });
-    else res.status(200).json({ flash: "User created !" });
+    else res.status(201).json({ flash: "User created !" });
     res.end();
   }
 
   getAllRestaurants(req, res, err) {
-    connection.query("SELECT * FROM restaurants LIMIT 150", (error, result) => {
+    connection.query("SELECT * FROM restaurants LIMIT 300", (error, result) => {
       if (err) {
         res.status(500).json({ flash: error.message });
       } else {
-        res.send(result);
+        res.status(200).send(result);
       }
     });
   }
@@ -62,7 +62,7 @@ class ApiController {
         if (err) {
           res.status(500).json({ flash: error.message });
         } else {
-          res.send(result);
+          res.status(200).send(result);
         }
       }
     );
@@ -76,7 +76,7 @@ class ApiController {
       }
     );
     if (err) res.status(500).send({ flash: error.message });
-    else res.status(200).send({ flash: "Favorite added !" });
+    else res.status(201).send({ flash: "Ajouté aux favoris !" });
     res.end();
   }
 
@@ -122,7 +122,7 @@ class ApiController {
     );
 
     if (err) res.status(500).json({ flash: error.message });
-    else res.status(200).json({ flash: "Database created !" });
+    else res.status(201).json({ flash: "Database created !" });
     res.end();
   }
 }
