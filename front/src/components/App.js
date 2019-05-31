@@ -253,6 +253,8 @@ class App extends Component {
 
 App.propTypes = {
   classes: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
+export { App };
 export default withRouter(withStyles(styles)(App));

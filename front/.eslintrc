@@ -19,5 +19,8 @@
   },
   "env": {
     "jest": true
+  },
+  "globals": {
+    "localStorage": true
   }
 }
