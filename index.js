@@ -5,7 +5,7 @@ const path = require("path");
 const port = process.env.PORT || 5000;
 const colors = require("colors/safe");
 const passport = require("passport");
-const PATH_TO_WEB_APP_BUILD = "web-app/build";
+const PATH_TO_WEB_APP_BUILD = "client/build";
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
