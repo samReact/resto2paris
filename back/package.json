@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "index.js",
+    "start": "node index.js",
     "start:watch": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -24,9 +24,7 @@
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "pug": "^2.0.3"
-  },
-  "devDependencies": {
+    "pug": "^2.0.3",
     "dotenv": "^8.0.0"
   }
 }
