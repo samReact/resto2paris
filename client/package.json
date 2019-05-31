@@ -26,7 +26,6 @@
     "axios": "^0.18.0",
     "google-maps-react": "^2.0.2",
     "husky": "^2.2.0",
-    "lint-staged": "^8.1.6",
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
     "react": "^16.5.0",
@@ -55,6 +54,7 @@
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.13.0",
+    "lint-staged": "^8.1.7",
     "prettier": "^1.17.0"
   }
 }
