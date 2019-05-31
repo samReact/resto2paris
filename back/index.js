@@ -54,3 +54,4 @@ app.listen(port, err => {
   else console.log(colors.rainbow(err));
   console.log("🤓");
 });
+console.log(process.env.NODE_ENV);

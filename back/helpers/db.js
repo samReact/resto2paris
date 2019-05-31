@@ -1,5 +1,17 @@
 const mysql = require("mysql2");
-const connection = mysql.createConnection({
+const parse = require('connection-string');
+const connectProd = parse(process.node.CLEARDB_DATABASE_URL)
+const connection = 
+process.node.NODE_ENV = 'production'
+?
+
+mysql.createConnection(
+connectProd
+);
+
+:
+
+mysql.createConnection({
   multipleStatements: true,
   user: "root",
   password: "rootSam$",
@@ -8,3 +20,4 @@ const connection = mysql.createConnection({
   host: "127.0.0.1"
 });
 module.exports = connection;
+
