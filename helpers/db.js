@@ -5,7 +5,7 @@ const connectProd = parse(process.env.CLEARDB_DATABASE_URL);
 const connection =
   process.env.NODE_ENV === "production"
     ? mysql.createConnection({
-        multipleStatements: true,
+        database: "heroku_443901cef8b613b",
         user: "b88805a3087cb8",
         password: "bf0ef2eb",
         port: 3306,
