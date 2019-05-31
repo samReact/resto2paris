@@ -1,13 +1,17 @@
 {
-  "name": "back",
+  "name": "resto2paris",
   "version": "1.0.0",
-  "description": "",
+  "description": "App to prepare my degree",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "start:watch": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cd client && npm install && npm run build"
+  },
+  "engines": {
+    "node": "10.x",
+    "npm ": "6.x"
   },
   "author": "",
   "license": "ISC",
