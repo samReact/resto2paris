@@ -7,6 +7,9 @@ const colors = require("colors/safe");
 const passport = require("passport");
 const PATH_TO_WEB_APP_BUILD = "web-app/build";
 
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 require("./middlewares/passport"); //New Strategy local for check user with passport
 require("./middlewares/jwtstrategie");
 
@@ -49,9 +52,8 @@ app.use((err, req, res, next) => {
  ******************************************************************************************************************************************/
 
 app.listen(port, err => {
-  console.clear();
-  if (!err) console.log(colors.rainbow("Site is live... Go ahead"));
-  else console.log(colors.rainbow(err));
-  console.log("🤓");
+  // console.clear();
+  // if (!err) console.log(colors.rainbow("Site is live... Go ahead"));
+  // else console.log(colors.rainbow(err));
+  // console.log("🤓");
 });
-console.log(process.env.NODE_ENV);
