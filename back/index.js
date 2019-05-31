@@ -5,12 +5,12 @@ const path = require("path");
 const port = process.env.PORT || 5000;
 const colors = require("colors/safe");
 const passport = require("passport");
+const PATH_TO_WEB_APP_BUILD = "web-app/build";
+
 require("./middlewares/passport"); //New Strategy local for check user with passport
 require("./middlewares/jwtstrategie");
 
-app.use(express.static(__dirname + "/public")); // all statics files in /public
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "pug");
+app.use(express.static(path.join(__dirname, PATH_TO_WEB_APP_BUILD)));
 
 app.use(
   // donnée en get post non encodé par l'URL
@@ -35,21 +35,6 @@ const apiRouter = require("./routes/api/api");
 
 app.use("/auth", authRouter);
 app.use("/api", apiRouter);
-
-/**
- * 404 Page
- */
-
-// Handle 500
-// app.use((error, req, res, next) => {
-//   new Error(error);
-//   console.error(colors.bold.red.underline(error.stack));
-//   res.json({
-//     message: error.message,
-//     stack: error.stack,
-//     error: error
-//   });
-// });
 
 app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message });
