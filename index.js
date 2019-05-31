@@ -39,6 +39,10 @@ const apiRouter = require("./routes/api/api");
 app.use("/auth", authRouter);
 app.use("/api", apiRouter);
 
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, PATH_TO_WEB_APP_BUILD, "index.html"));
+});
+
 app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message });
 });
