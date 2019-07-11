@@ -4,19 +4,24 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
-  formControl: {
-    margin: theme.spacing.unit,
-    minWidth: 120,
+  select: {
+    color: '#fff',
+    '&:before': {
+      borderColor: '#fff !important',
+    },
+    '&:after': {
+      borderColor: '#fff !important',
+    },
   },
   selectEmpty: {
     marginTop: theme.spacing.unit * 2,
   },
-  filled: {
+  icon: {
     color: '#fff',
   },
-  root: {
-    backgroundColor: '#fff',
-    paddingLeft: 5,
+  input: {
+    margin: theme.spacing.unit,
+    minWidth: 120,
   },
 });
 
@@ -36,9 +41,9 @@ const SelectList = ({ classes, arrondissement, restaurants }) => {
   const filteredArea = getArea();
 
   return (
-    <FormControl className={classes.formControl}>
+    <FormControl className={classes.input}>
       <InputLabel
-        className={classes.filled}
+        className={classes.select}
         variant="filled"
         htmlFor="age-native-simple"
         focused={false}
@@ -46,7 +51,13 @@ const SelectList = ({ classes, arrondissement, restaurants }) => {
         Quartier de Paris
       </InputLabel>
       <Select
-        className={classes.root}
+        className={classes.select}
+        classes={{
+          select: classes.select, // class name, e.g. `classes-nesting-root-x`
+          icon: classes.icon,
+          label: classes.label,
+          root: classes.root,
+        }}
         native
         onChange={handleChange('arrondissements')}
         inputProps={{

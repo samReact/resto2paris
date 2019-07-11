@@ -28,15 +28,14 @@ class ApiController {
       e.to_website,
       e.image_url,
       e.latitude,
-      e.longitude
+      e.longitude,
     ]);
-    console.log(restoo);
     connection.query(
       "INSERT INTO restaurants (name, address1, address2, area,city,mainCategory,secondaryCategory,editorial_rating,description,annotation,owner_annotation,to_website,image_url,latitude,longitude) VALUES ?",
       [restoo],
       function(error, res) {
         if (error) throw error;
-      }
+      },
     );
 
     if (err) res.status(500).json({ flash: error.message });
@@ -64,7 +63,7 @@ class ApiController {
         } else {
           res.status(200).send(result);
         }
-      }
+      },
     );
   }
   recordFavorite(req, res, err) {
@@ -73,7 +72,7 @@ class ApiController {
       `INSERT INTO favorites (user_id, restaurant_id) VALUES (${userId},${restaurantId})`,
       error => {
         if (error) throw error;
-      }
+      },
     );
     if (err) res.status(500).send({ flash: error.message });
     else res.status(201).send({ flash: "Ajouté aux favoris !" });
@@ -86,7 +85,7 @@ class ApiController {
       `DELETE FROM favorites WHERE user_id = ${userId} AND restaurant_id = ${restaurantId}`,
       error => {
         if (error) throw error;
-      }
+      },
     );
     if (err) res.status(500).send({ flash: error.message });
     else res.status(200).send({ flash: "Favorite removed !" });
@@ -110,7 +109,7 @@ class ApiController {
       e.to_website,
       e.image_url,
       e.latitude,
-      e.longitude
+      e.longitude,
     ]);
     connection.query(
       "INSERT INTO restaurants (name,address1,address2,area,city,mainCategory,secondaryCategory,editorial_rating,description,annotation,owner_annotation,to_website,image_url,latitude,longitude) VALUES ?",
@@ -118,7 +117,7 @@ class ApiController {
       function(error, res) {
         console.log(error);
         if (error) throw error;
-      }
+      },
     );
 
     if (err) res.status(500).json({ flash: error.message });

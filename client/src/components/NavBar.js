@@ -16,6 +16,9 @@ import SelectList from './SelectList';
 const styles = {
   root: {
     flexGrow: 1,
+    '&:focus': {
+      outline: 'red !important',
+    },
   },
   grow: {
     flexGrow: 1,
@@ -56,6 +59,9 @@ class NavBar extends Component {
       <AppBar position="fixed">
         <Toolbar variant="dense">
           <IconButton
+            classes={{
+              root: classes.root,
+            }}
             color="inherit"
             aria-label="Menu"
             aria-owns={anchorEl ? 'simple-menu' : null}
@@ -129,6 +135,7 @@ class NavBar extends Component {
             ) : (
               <MenuItem
                 onClick={() => {
+                  this.setState({ anchorEl: null });
                   history.push('/signin');
                 }}
               >

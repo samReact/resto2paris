@@ -10,7 +10,7 @@
     "build": "cd client && npm install && npm run build"
   },
   "engines": {
-    "node": "10.x",
+    "node": "12.x",
     "npm ": "6.x"
   },
   "author": "",
