@@ -15,9 +15,8 @@ import SelectList from './SelectList';
 
 const styles = {
   root: {
-    flexGrow: 1,
     '&:focus': {
-      outline: 'red !important',
+      outline: 'none !important',
     },
   },
   grow: {
@@ -56,7 +55,12 @@ class NavBar extends Component {
 
     return (
       // <div className={classes.root}>
-      <AppBar position="fixed">
+      <AppBar
+        position="fixed"
+        classes={{
+          root: classes.grow,
+        }}
+      >
         <Toolbar variant="dense">
           <IconButton
             classes={{

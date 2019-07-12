@@ -9,7 +9,7 @@ const connection =
         user: "b88805a3087cb8",
         password: "bf0ef2eb",
         port: 3306,
-        host: "eu-cdbr-west-02.cleardb.net"
+        host: "eu-cdbr-west-02.cleardb.net",
       })
     : mysql.createConnection({
         multipleStatements: true,
@@ -17,7 +17,7 @@ const connection =
         password: "rootSam$",
         database: "alternance",
         port: 3306,
-        host: "127.0.0.1"
+        host: "127.0.0.1",
       });
 module.exports = connection;
 
