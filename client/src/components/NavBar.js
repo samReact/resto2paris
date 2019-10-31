@@ -86,7 +86,7 @@ class NavBar extends Component {
           {user ? (
             <Typography
               style={{ fontSize: '15px' }}
-              variant="title"
+              variant="h6"
               color="inherit"
             >
               {user.name}

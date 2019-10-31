@@ -2,43 +2,42 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const connection = require("../helpers/db");
 const { comparePassword } = require("./bcryptPassword");
+const Users = require("../models/Users");
 
 passport.use(
   "user",
   new LocalStrategy(
     {
       usernameField: "email",
-      passwordField: "password"
+      passwordField: "password",
     },
-    (username, password, cb) => {
-      const sql = "SELECT * FROM users WHERE email = ?";
-      connection.query(sql, username, (error, user) => {
-        if (error) {
-          return cb(error);
-        }
-        if (!user.length) {
-          return cb(null, false, {
-            message: "Incorrect email !",
-            toast: "error"
-          });
-        }
-        if (user.length) {
-          const checkPass = comparePassword(password, user[0].password);
+    async (username, password, cb) => {
+      try {
+        const user = await Users.findOne({ where: { email: username } });
+        if (user) {
+          const checkPass = comparePassword(password, user.password);
           checkPass.then(check => {
             check
-              ? cb(null, user[0], {
-                  message: `Bienvenue ${user[0].name}`,
-                  toast: "success"
+              ? cb(null, user, {
+                  message: `Bienvenue ${user.name}`,
+                  toast: "success",
                 })
               : cb(null, false, {
                   message: "Mot de passe invalide",
-                  toast: "error"
+                  toast: "error",
                 });
           });
+        } else {
+          return cb(null, false, {
+            message: "Incorrect email !",
+            toast: "error",
+          });
         }
-      });
-    }
-  )
+      } catch (error) {
+        return cb(error);
+      }
+    },
+  ),
 );
 
 passport.serializeUser((user, cb) => {

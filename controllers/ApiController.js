@@ -46,7 +46,7 @@ class ApiController {
 
   async getAllRestaurants(req, res, err) {
     try {
-      const restaurants = await Restaurants.findAll();
+      const restaurants = await Restaurants.findAll({ limit: 50 });
       res.status(200).send(restaurants);
     } catch (err) {
       res.status(500).json({ flash: err.message });

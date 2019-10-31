@@ -11,8 +11,9 @@ const controller = new ApiController();
 router.post("/record", (req, res) => controller.recordAllrestaurants(req, res));
 
 router.get("/restaurants", (req, res) =>
-  controller.getAllRestaurants(req, res)
+  controller.getAllRestaurants(req, res),
 );
+
 router.post("/record", (req, res) => controller.record(req, res));
 
 router.post("/getFavorites/:id_user", (req, res, next) => {
@@ -23,7 +24,7 @@ router.post("/getFavorites/:id_user", (req, res, next) => {
     if (!user) {
       return res.send({
         message: "not connected",
-        user: user
+        user: user,
       });
     }
     controller.getFavorites(req, res);
@@ -38,7 +39,7 @@ router.post("/recordfavorites/:id_restaurant", (req, res, next) => {
     if (!user) {
       return res.send({
         message: "not connected",
-        user: user
+        user: user,
       });
     }
     controller.recordFavorite(req, res);
@@ -53,7 +54,7 @@ router.post("/removefavorites/:id_restaurant", (req, res, next) => {
     if (!user) {
       return res.send({
         message: "not connected",
-        user: user
+        user: user,
       });
     }
     controller.removeFavorite(req, res);
