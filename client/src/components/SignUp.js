@@ -35,7 +35,6 @@ class SignUp extends Component {
         name: '',
         lastname: '',
       },
-      flash: '',
       password2: '',
       isAuthenticated: false,
       emailError: false,
@@ -58,7 +57,7 @@ class SignUp extends Component {
     });
   };
 
-  handleSubmit = async e => {
+  handleSubmit = e => {
     e.preventDefault();
     const { post, password2 } = this.state;
     const { history } = this.props;
@@ -81,7 +80,7 @@ class SignUp extends Component {
     if (!validator.equals(post.password, password2)) {
       return this.setState({ errorValidationPassword: true });
     }
-    await axios
+    return axios
       .post('/auth/signup', post)
       .then(res => res.data)
       .then(res => {
@@ -241,6 +240,7 @@ class SignUp extends Component {
 
 SignUp.propTypes = {
   classes: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 export default withRouter(withStyles(styles)(SignUp));

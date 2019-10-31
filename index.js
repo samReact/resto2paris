@@ -18,8 +18,8 @@ app.use(express.static(path.join(__dirname, PATH_TO_WEB_APP_BUILD)));
 app.use(
   // donnée en get post non encodé par l'URL
   bodyParser.urlencoded({
-    extended: false
-  })
+    extended: false,
+  }),
 );
 
 app.use(bodyParser.json({ limit: "10mb", extended: true }));
@@ -56,8 +56,8 @@ app.use((err, req, res, next) => {
  ******************************************************************************************************************************************/
 
 app.listen(port, err => {
-  // console.clear();
-  // if (!err) console.log(colors.rainbow("Site is live... Go ahead"));
-  // else console.log(colors.rainbow(err));
-  // console.log("🤓");
+  console.clear();
+  if (!err) console.log(colors.rainbow("Site is live... Go ahead"));
+  else console.log(colors.rainbow(err));
+  console.log("🤓");
 });

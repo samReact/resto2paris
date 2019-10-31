@@ -23,7 +23,7 @@ const theme = createMuiTheme({
     marginLeft: 15,
   },
   typography: {
-    // fontSize: 25
+    useNextVariants: true,
   },
 });
 export default theme;

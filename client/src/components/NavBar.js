@@ -77,7 +77,7 @@ class NavBar extends Component {
 
           <Typography
             style={{ fontSize: '20px' }}
-            variant="title"
+            variant="h6"
             color="inherit"
             className={classes.grow}
           >

@@ -1,6 +1,7 @@
 const connection = require("../helpers/db");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
+const Restaurants = require("../models/Restaurants");
 /**
  * Class Pages Controller
  */
@@ -43,14 +44,13 @@ class ApiController {
     res.end();
   }
 
-  getAllRestaurants(req, res, err) {
-    connection.query("SELECT * FROM restaurants LIMIT 300", (error, result) => {
-      if (err) {
-        res.status(500).json({ flash: error.message });
-      } else {
-        res.status(200).send(result);
-      }
-    });
+  async getAllRestaurants(req, res, err) {
+    try {
+      const restaurants = await Restaurants.findAll();
+      res.status(200).send(restaurants);
+    } catch (err) {
+      res.status(500).json({ flash: err.message });
+    }
   }
 
   getFavorites(req, res, err) {

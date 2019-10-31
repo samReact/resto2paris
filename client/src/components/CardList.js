@@ -157,7 +157,7 @@ class CardList extends Component {
       <div className="container" style={{ paddingTop: 50 }}>
         <Grid container spacing={8}>
           {restaurants.map(restaurant => (
-            <Grid key={restaurant.name} item xs={12} sm={6} md={4}>
+            <Grid key={restaurant.id} item xs={12} sm={6} md={4}>
               <Card name={restaurant} className={classes.card}>
                 <CardHeader
                   avatar={

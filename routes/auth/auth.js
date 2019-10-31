@@ -6,7 +6,7 @@ const { check, validationResult } = require("express-validator/check");
 const getErrorAsObject = errors =>
   errors.reduce((errorObject, { param, msg }) => {
     errorObject[param] = msg;
-    return errorObject;
+    return msg;
   }, {});
 
 /**
@@ -15,7 +15,6 @@ const getErrorAsObject = errors =>
 const AuthController = require("../../controllers/AuthController");
 const controller = new AuthController();
 
-router.get("/map", (req, res) => controller.loading(req, res));
 router.post(
   "/signup",
   [
@@ -35,9 +34,14 @@ router.post(
       .not()
       .isEmpty()
       .withMessage("Le champ Password est vide"),
+    check("password")
+      .isLength({ min: 6 })
+      .withMessage(
+        "Le password doit avoir une longueur minimal de 6 caractères",
+      ),
     check("email")
       .isEmail()
-      .withMessage("Le format de l'email est invalide")
+      .withMessage("Le format de l'email est invalide"),
   ],
   (req, res, next) => {
     const errors = validationResult(req).array();
@@ -45,7 +49,7 @@ router.post(
     if (errors.length) {
       return res.status(400).send({ errors: getErrorAsObject(errors) });
     } else controller.signUp(req, res, next);
-  }
+  },
 );
 router.post("/signin", (req, res) => controller.signin(req, res));
 router.get("/signout", (req, res) => controller.signout(req, res));
