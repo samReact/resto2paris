@@ -1,43 +1,43 @@
 import React from 'react';
-import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 import { withRouter } from 'react-router-dom';
-import favoriteIcon from '../assets/img/favoriteIcon.svg';
-import icon from '../assets/img/baseline-restaurant-24px.svg';
+import { Map as LeafletMap, TileLayer, Marker } from 'react-leaflet';
+import L from 'leaflet';
+
+const favoriteIcon = new L.Icon({
+  iconUrl: require('../assets/img/favoriteIcon.svg'),
+  iconRetinaUrl: require('../assets/img/favoriteIcon.svg'),
+});
+
+const icon = new L.Icon({
+  iconUrl: require('../assets/img/baseline-restaurant-24px.svg'),
+  iconRetinaUrl: require('../assets/img/baseline-restaurant-24px.svg'),
+});
 
 const MapList = ({ google, restaurants, favorites }) => {
+  const position = [48.855269, 2.345856];
   return (
-    <div style={{ height: '100vh', width: '100%' }}>
-      <Map
-        google={google}
-        initialCenter={{
-          lat: 48.855269,
-          lng: 2.345856,
-        }}
-        zoom={13}
-      >
-        {restaurants.map(restaurant => (
-          <Marker
-            key={restaurant.id}
-            name="Your position"
-            position={{ lat: restaurant.latitude, lng: restaurant.longitude }}
-            // icon={favoriteIcon}
-            icon={
-              favorites.length
-                ? favorites.find(elt => elt.id === restaurant.id)
-                  ? favoriteIcon
-                  : icon
+    <LeafletMap zoom={13} style={{ height: '100vh' }} center={position}>
+      <TileLayer
+        attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      {restaurants.map(restaurant => (
+        <Marker
+          key={restaurant.id}
+          name="Your position"
+          position={{ lat: restaurant.latitude, lng: restaurant.longitude }}
+          icon={
+            favorites.length
+              ? favorites.find(elt => elt.id === restaurant.id)
+                ? favoriteIcon
                 : icon
-            }
-            title={restaurant.name}
-          />
-        ))}
-      </Map>
-    </div>
+              : icon
+          }
+          title={restaurant.name}
+        />
+      ))}
+    </LeafletMap>
   );
 };
 
-export default withRouter(
-  GoogleApiWrapper({
-    apiKey: 'AIzaSyBJWOhhYJVHkzShIFen7id4uZdFtooV4Xg',
-  })(MapList)
-);
+export default withRouter(MapList);

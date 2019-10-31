@@ -24,19 +24,21 @@
     "abort-controller": "^1.0.2",
     "ajv": "^6.5.3",
     "axios": "^0.18.0",
+    "eslint": "^5.16.0",
     "google-maps-react": "^2.0.2",
     "husky": "^2.2.0",
+    "leaflet": "^1.5.1",
     "lodash": "^4.17.11",
     "prop-types": "^15.7.2",
     "react": "^16.5.0",
     "react-bootstrap": "^0.32.4",
     "react-dom": "^16.5.0",
+    "react-leaflet": "^2.5.0",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.5",
     "react-stars": "^2.2.5",
     "react-toastify": "^4.3.1",
-    "validator": "^10.7.1",
-    "eslint": "^5.16.0"
+    "validator": "^10.7.1"
   },
   "scripts": {
     "start": "react-scripts start",
