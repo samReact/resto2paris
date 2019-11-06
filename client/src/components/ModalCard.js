@@ -12,7 +12,6 @@ import {
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
-import { GoogleApiWrapper } from 'google-maps-react';
 
 const Transition = props => {
   return <Slide direction="up" {...props} />;
@@ -78,8 +77,4 @@ ModalCard.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(
-  GoogleApiWrapper({
-    apiKey: 'AIzaSyBJWOhhYJVHkzShIFen7id4uZdFtooV4Xg',
-  })(ModalCard)
-);
+export default withStyles(styles)(ModalCard);

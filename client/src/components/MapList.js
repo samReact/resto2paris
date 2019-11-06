@@ -13,7 +13,7 @@ const icon = new L.Icon({
   iconRetinaUrl: require('../assets/img/baseline-restaurant-24px.svg'),
 });
 
-const MapList = ({ google, restaurants, favorites }) => {
+const MapList = ({ restaurants, favorites }) => {
   const position = [48.855269, 2.345856];
   return (
     <LeafletMap zoom={13} style={{ height: '100vh' }} center={position}>

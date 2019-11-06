@@ -2,6 +2,7 @@ const connection = require("../helpers/db");
 const bcrypt = require("../middlewares/bcryptPassword");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
+const Users = require("../models/Users");
 /**
  * Class Pages Controller
  */
@@ -12,18 +13,18 @@ class AuthController {
    * @param {*} res
    */
 
-  signUp(req, res, next) {
+  async signUp(req, res, next) {
     let user = req.body;
     user = bcrypt.hashPassword(user, user.password);
-    connection.query("INSERT INTO users SET ?", user, (error, result) => {
-      if (error) {
-        return next(error);
-      } else
-        res.status(201).json({
-          message: "Votre compte a été crée avec succès !",
-          toast: "success"
-        });
-    });
+    try {
+      await Users.create(user);
+      res.status(201).json({
+        message: "Votre compte a été crée avec succès !",
+        toast: "success",
+      });
+    } catch (error) {
+      return next(error);
+    }
   }
 
   signin(req, res) {
@@ -38,7 +39,7 @@ class AuthController {
         user,
         token,
         message: info.message,
-        toast: info.toast
+        toast: info.toast,
       });
     })(req, res);
   }

@@ -12,7 +12,7 @@ import RestaurantIcon from '@material-ui/icons/Restaurant';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import red from '@material-ui/core/colors/red';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import validator from 'validator';
@@ -130,7 +130,6 @@ class SignUp extends Component {
         justify="center"
         style={{ height: '100vh', backgroundColor: '#2c3e50' }}
       >
-        <ToastContainer />
         <Grid item xs={12}>
           <Paper elevation={4} style={{ margin: 32 }}>
             <Grid

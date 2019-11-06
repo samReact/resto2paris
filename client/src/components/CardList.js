@@ -12,7 +12,7 @@ import {
   IconButton,
   Grid,
 } from '@material-ui/core';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import red from '@material-ui/core/colors/red';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import { withStyles } from '@material-ui/core/styles';
@@ -225,7 +225,6 @@ class CardList extends Component {
             </Grid>
           ))}
         </Grid>
-        <ToastContainer />
         <ModalCard open={open} close={this.handleClose} restaurant={name} />
         <Button>More</Button>
       </div>

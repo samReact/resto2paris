@@ -7,7 +7,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import red from '@material-ui/core/colors/red';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 
@@ -145,7 +145,6 @@ class SignIn extends Component {
                       </Grid>
                       <Link to="/signup">Sign Up</Link>
                     </Grid>
-                    <ToastContainer />
                   </form>
                 </div>
               </Grid>
