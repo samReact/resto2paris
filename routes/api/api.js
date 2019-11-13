@@ -8,8 +8,6 @@ const passport = require("passport");
 const ApiController = require("../../controllers/ApiController");
 const controller = new ApiController();
 
-router.post("/record", (req, res) => controller.recordAllrestaurants(req, res));
-
 router.get("/restaurants", (req, res) =>
   controller.getAllRestaurants(req, res)
 );
