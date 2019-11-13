@@ -2,51 +2,55 @@ const sequelize = require("../helpers/db");
 const Sequelize = require("sequelize");
 
 const Restaurants = sequelize.define("restaurants", {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true
+  },
   name: {
-    type: Sequelize.STRING,
+    type: Sequelize.STRING
   },
   address1: {
-    type: Sequelize.STRING,
+    type: Sequelize.STRING
   },
   address2: {
-    type: Sequelize.STRING,
+    type: Sequelize.STRING
   },
   area: {
-    type: Sequelize.STRING,
+    type: Sequelize.STRING
   },
   city: {
-    type: Sequelize.STRING,
+    type: Sequelize.STRING
   },
   mainCategory: {
-    type: Sequelize.STRING,
+    type: Sequelize.STRING
   },
   secondaryCategory: {
-    type: Sequelize.STRING,
+    type: Sequelize.STRING
   },
   editorial_rating: {
-    type: Sequelize.TINYINT,
+    type: Sequelize.TINYINT
   },
   description: {
-    type: Sequelize.TEXT,
+    type: Sequelize.TEXT
   },
   annotation: {
-    type: Sequelize.TEXT,
+    type: Sequelize.TEXT
   },
   owner_annotation: {
-    type: Sequelize.TEXT,
+    type: Sequelize.TEXT
   },
   to_website: {
-    type: Sequelize.TEXT,
+    type: Sequelize.TEXT
   },
   image_url: {
-    type: Sequelize.TEXT,
+    type: Sequelize.TEXT
   },
   latitude: {
-    type: Sequelize.FLOAT,
+    type: Sequelize.FLOAT
   },
   longitude: {
-    type: Sequelize.FLOAT,
-  },
+    type: Sequelize.FLOAT
+  }
 });
 
 module.exports = Restaurants;

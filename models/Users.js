@@ -2,19 +2,23 @@ const Sequelize = require("sequelize");
 const sequelize = require("../helpers/db.js");
 
 const Users = sequelize.define("users", {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true
+  },
   email: {
     type: Sequelize.STRING,
-    unique: true,
+    unique: true
   },
   password: {
-    type: Sequelize.STRING,
+    type: Sequelize.STRING
   },
   name: {
-    type: Sequelize.STRING,
+    type: Sequelize.STRING
   },
   lastname: {
-    type: Sequelize.STRING,
-  },
+    type: Sequelize.STRING
+  }
 });
 
 module.exports = Users;

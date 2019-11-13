@@ -18,8 +18,8 @@ app.use(express.static(path.join(__dirname, PATH_TO_WEB_APP_BUILD)));
 app.use(
   // donnée en get post non encodé par l'URL
   bodyParser.urlencoded({
-    extended: false,
-  }),
+    extended: false
+  })
 );
 
 app.use(bodyParser.json({ limit: "10mb", extended: true }));
@@ -27,7 +27,6 @@ app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
 // Initialize passport
 app.use(passport.initialize());
-// app.use(passport.session());
 
 /**
  * routing
@@ -49,9 +48,7 @@ app.use((err, req, res, next) => {
 
 /*********************************************************************************************************************************************
  * *************************************************************************
- * *************************************************************************
  *  Running Server
- * *************************************************************************
  * *************************************************************************
  ******************************************************************************************************************************************/
 
